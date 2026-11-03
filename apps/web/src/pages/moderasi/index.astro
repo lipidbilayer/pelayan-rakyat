@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Moderasi" description="Antrian verifikasi Pelayan Rakyat." noindex>
+  <section class="hero">
+    <p class="eyebrow">Moderasi</p>
+    <h1>Antrian verifikasi</h1>
+    <p class="lede">
+      Halaman ini hanya untuk moderator. Tidak ada tautan publik ke sini.
+    </p>
+  </section>
+
+  <div id="moderasi-root" data-page="queue"></div>
+
+  <script is:inline src="/scripts/moderasi.js" defer></script>
+</BaseLayout>

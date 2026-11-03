@@ -1,0 +1,89 @@
+name: web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/web.yml"
+  workflow_dispatch:
+    inputs:
+      allow_drop:
+        description: "Allow a >20% drop in verified people"
+        required: false
+        default: "false"
+  repository_dispatch:
+    types: [content_changed]
+  schedule:
+    - cron: "0 3 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-deploy
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-24.04
+    env:
+      SITE_URL: ${{ vars.SITE_URL || 'http://localhost' }}
+      PB_PUBLIC_URL: ${{ vars.PB_PUBLIC_URL || 'http://127.0.0.1:8090' }}
+      ALLOW_DROP: ${{ github.event.inputs.allow_drop || 'false' }}
+      LAST_MANIFEST_PATH: last-manifest.json
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24.22.2"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm ci
+
+      - name: Fetch last manifest
+        working-directory: apps/web
+        run: curl -fsS "${PB_PUBLIC_URL}/data/manifest.json" -o last-manifest.json || true
+
+      - name: Install OG font
+        run: sudo apt-get update && sudo apt-get install -y fonts-liberation
+
+      - name: Build Astro site and Pagefind index
+        working-directory: apps/web
+        run: npm run build
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          SSH_PORT_INPUT: ${{ secrets.SSH_PORT }}
+        run: |
+          umask 077
+          install -d "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/deploy_key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/deploy_key" "$HOME/.ssh/known_hosts"
+          if [ -n "$SSH_PORT_INPUT" ]; then
+            echo "SSH_PORT=$SSH_PORT_INPUT" >> "$GITHUB_ENV"
+          else
+            echo "SSH_PORT=22" >> "$GITHUB_ENV"
+          fi
+
+      - name: Deploy static files with rsync
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          rsync -rlptz --delete --chmod=D755,F644 \
+            -e "ssh -i $HOME/.ssh/deploy_key -p $SSH_PORT -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts" \
+            apps/web/dist/ "$SSH_USER@$SSH_HOST:/srv/site/"
+
+      - name: Remove deploy key
+        if: always()
+        run: rm -f "$HOME/.ssh/deploy_key"

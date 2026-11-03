@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadSnapshot, formatDate } from "../data/api";
+
+const snapshot = await loadSnapshot();
+const active = (p: any) => p.status === "active";
+const governorCount = snapshot.positions.filter((p: any) => active(p) && snapshot.institutionById.get(p.institution)?.kind === "governor_office").length;
+const dprdCount = snapshot.positions.filter((p: any) => active(p) && snapshot.institutionById.get(p.institution)?.kind === "dprd_dki" && p.title === "Anggota").length;
+const cityCount = snapshot.positions.filter((p: any) => active(p) && (p.title === "Wali Kota" || p.title === "Bupati")).length;
+const pusatCount = snapshot.positions.filter((p: any) => active(p) && (snapshot.institutionById.get(p.institution)?.kind === "dpr_ri" || snapshot.institutionById.get(p.institution)?.kind === "dpd_ri")).length;
+const policeCount = snapshot.positions.filter((p: any) => active(p) && (snapshot.institutionById.get(p.institution)?.kind === "polda_metro" || snapshot.institutionById.get(p.institution)?.kind === "polres")).length;
+const updated = new Date().toLocaleDateString("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric" });
+---
+
+<BaseLayout title="Pelayan Rakyat" description="Catatan publik tentang ucapan, janji, dan kinerja pejabat di Indonesia. Independen, bersumber, dan tanpa glorifikasi.">
+  <section class="hero">
+    <p class="eyebrow">Pemantauan publik · DKI Jakarta</p>
+    <h1>Pelayan Rakyat</h1>
+    <p class="tagline">Kita gaji, kita nilai.</p>
+    <p class="lede">
+      Catatan publik tentang apa yang pejabat katakan, janjikan, dan kerjakan.
+      Satu standar untuk semua pihak, dengan sumber yang bisa diperiksa.
+    </p>
+    <form class="search-box" action="/cari" method="get">
+      <label class="visually-hidden" for="q">Cari</label>
+      <input id="q" name="q" type="search" placeholder="Cari nama pejabat…" />
+      <button class="button" type="submit">Cari</button>
+    </form>
+  </section>
+
+  <hr class="rule" />
+
+  <section aria-labelledby="masuk">
+    <h2 id="masuk">Masuk</h2>
+    <ul class="entry-cards">
+      <li><a href="/pemprov"><strong>Gubernur &amp; wakil gubernur</strong><span>{governorCount} jabatan</span></a></li>
+      <li><a href="/dprd"><strong>DPRD DKI</strong><span>{dprdCount} anggota</span></a></li>
+      <li><a href="/pemprov"><strong>Wali kota &amp; bupati</strong><span>{cityCount} jabatan</span></a></li>
+      <li><a href="/pusat"><strong>DPR &amp; DPD dari Jakarta</strong><span>{pusatCount} anggota</span></a></li>
+      <li><a href="/polisi"><strong>Polda &amp; Polres</strong><span>{policeCount} jabatan</span></a></li>
+    </ul>
+  </section>
+
+  <hr class="rule" />
+
+  <section aria-labelledby="pergantian">
+    <h2 id="pergantian">Pergantian terbaru</h2>
+    {snapshot.recentChanges.length === 0 && <p class="note">Belum ada pergantian terverifikasi.</p>}
+    <ul class="principles">
+      {snapshot.recentChanges.map((item: any) => (
+        <li>
+          <a href={`/orang/${item.person?.slug}`}>{item.person?.full_name || item.person?.id}</a>
+          <span class="note">
+            {" — "}
+            {item.type === "start" && "mulai menjabat"}
+            {item.type === "end" && "selesai menjabat"}
+            {item.type === "status" && (item.event.status === "inactive" ? "dinonaktifkan" : item.event.status === "active" ? "diaktifkan kembali" : "berakhir")}
+            {" · "}
+            {item.institution?.name || item.position.institution}
+            {" · "}
+            {formatDate(item.date, item.type === "status" ? "day" : (item.type === "start" ? item.position.start_date_precision : item.position.end_date_precision))}
+            {item.sources.length > 0 && (
+              <span>{" · "}
+                {item.sources.map((s: any) => <a href={s.url} target="_blank" rel="noopener noreferrer">{s.publisher || "sumber"}</a>)}
+              </span>
+            )}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <p class="note">Data diperbarui {updated}.</p>
+</BaseLayout>

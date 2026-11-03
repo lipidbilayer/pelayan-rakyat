@@ -1,0 +1,76 @@
+name: pelayan-rakyat
+
+services:
+  pocketbase:
+    image: ${PB_IMAGE:-pelayan-rakyat/pocketbase:local}
+    build:
+      context: ../services/pocketbase
+    restart: unless-stopped
+    stop_grace_period: 30s
+    mem_limit: 128m
+    environment:
+      SITE_URL: ${SITE_URL:-http://localhost:8080}
+      PB_ADMIN_EMAIL: ${PB_ADMIN_EMAIL:?set PB_ADMIN_EMAIL in .env}
+      PB_ADMIN_PASSWORD: ${PB_ADMIN_PASSWORD:?set PB_ADMIN_PASSWORD in .env}
+      PB_BACKUP_S3_ENABLED: ${PB_BACKUP_S3_ENABLED:-false}
+      PB_BACKUP_CRON: ${PB_BACKUP_CRON:-0 2 * * *}
+      PB_BACKUP_KEEP: ${PB_BACKUP_KEEP:-14}
+      PB_BACKUP_S3_BUCKET: ${PB_BACKUP_S3_BUCKET:-}
+      PB_BACKUP_S3_REGION: ${PB_BACKUP_S3_REGION:-auto}
+      PB_BACKUP_S3_ENDPOINT: ${PB_BACKUP_S3_ENDPOINT:-}
+      PB_BACKUP_S3_ACCESS_KEY: ${PB_BACKUP_S3_ACCESS_KEY:-}
+      PB_BACKUP_S3_SECRET: ${PB_BACKUP_S3_SECRET:-}
+      PB_BACKUP_S3_FORCE_PATH_STYLE: ${PB_BACKUP_S3_FORCE_PATH_STYLE:-true}
+    volumes:
+      - pb_data:/pb_data
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8090/api/health >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  caddy:
+    image: caddy:2.11.7-alpine
+    restart: unless-stopped
+    mem_limit: 48m
+    depends_on:
+      pocketbase:
+        condition: service_healthy
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-http://:80}
+      ADMIN_LISTEN_ADDRESS: ${ADMIN_LISTEN_ADDRESS:-http://127.0.0.1:8081}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:8081:8081"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro,z
+      - ${SITE_ROOT:-../apps/web/dist}:/srv/site:ro,z
+      - caddy_data:/data
+      - caddy_config:/config
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:2019/config/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  pb_data:
+  caddy_data:
+  caddy_config:

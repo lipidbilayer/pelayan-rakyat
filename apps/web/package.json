@@ -1,0 +1,25 @@
+{
+  "name": "pelayan-rakyat-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "astro": "7.4.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "@resvg/resvg-js": "2.6.2",
+    "pagefind": "1.6.0",
+    "satori": "0.63.2",
+    "serve": "^14.2.4"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

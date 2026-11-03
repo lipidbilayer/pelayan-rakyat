@@ -1,0 +1,33 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+.deploy-state
+
+# PocketBase runtime data
+pb_data/
+services/pocketbase/pb_data/
+*.db
+*.db-shm
+*.db-wal
+
+# Node / Astro
+node_modules/
+dist/
+.astro/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build and tooling caches
+.DS_Store
+.idea/
+.vscode/
+*.tsbuildinfo
+pagefind/
+
+# Local test artefacts
+backups/
+*.zip

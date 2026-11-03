@@ -1,0 +1,71 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { createHash } from "node:crypto";
+import { loadSnapshot, formatDate } from "../data/api";
+
+const snapshot = await loadSnapshot();
+const ogHash = createHash("sha256").update("DPR dan DPD dari Jakarta|Anggota DPR RI dan DPD").digest("hex").slice(0, 12);
+const ogImage = `/og/pusat.${ogHash}.png`;
+const dpr = snapshot.positions.filter((p: any) => {
+  const institution = snapshot.institutionById.get(p.institution);
+  return p.status === "active" && institution?.kind === "dpr_ri";
+});
+const dpd = snapshot.positions.filter((p: any) => {
+  const institution = snapshot.institutionById.get(p.institution);
+  return p.status === "active" && institution?.kind === "dpd_ri";
+});
+const dprDapils = snapshot.dapils.filter((d: any) => d.level === "dpr_ri").sort((a: any, b: any) => a.code.localeCompare(b.code));
+---
+
+<BaseLayout image={ogImage} title="DPR dan DPD dari Jakarta" description="Anggota DPR RI dan DPD RI dari Jakarta.">
+  <section class="hero">
+    <h1>DPR RI dan DPD RI dari Jakarta</h1>
+  </section>
+
+  <section aria-labelledby="dpr">
+    <h2 id="dpr">DPR RI</h2>
+    {dprDapils.map((dapil: any) => {
+      const members = dpr.filter((p: any) => p.dapil === dapil.id).sort((a: any, b: any) => {
+        const pa = snapshot.personById.get(a.person)?.full_name || "";
+        const pb = snapshot.personById.get(b.person)?.full_name || "";
+        return pa.localeCompare(pb, "id");
+      });
+      return (
+        <div>
+          <h3>{dapil.name} ({members.length}/{dapil.seats} kursi)</h3>
+          <ul class="principles">
+            {members.map((position: any) => {
+              const person = snapshot.personById.get(position.person);
+              const party = position.party ? snapshot.partyById.get(position.party) : null;
+              return (
+                <li>
+                  <a href={`/orang/${person?.slug}`}>{person?.full_name || position.person}</a>
+                  <span class="note"> — {position.komisi || "Tanpa komisi"}{party ? ` · ${party.short_name || party.name}` : ""}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      );
+    })}
+  </section>
+
+  <section aria-labelledby="dpd">
+    <h2 id="dpd">DPD RI</h2>
+    <ul class="principles">
+      {dpd.sort((a: any, b: any) => {
+        const pa = snapshot.personById.get(a.person)?.full_name || "";
+        const pb = snapshot.personById.get(b.person)?.full_name || "";
+        return pa.localeCompare(pb, "id");
+      }).map((position: any) => {
+        const person = snapshot.personById.get(position.person);
+        return (
+          <li>
+            <a href={`/orang/${person?.slug}`}>{person?.full_name || position.person}</a>
+            <span class="note"> · sejak {formatDate(position.start_date, position.start_date_precision)}</span>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+</BaseLayout>

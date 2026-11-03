@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadSnapshot, formatDate } from "../../data/api";
+import { createHash } from "node:crypto";
+
+export async function getStaticPaths() {
+  const snapshot = await loadSnapshot();
+  return snapshot.parties.map((party: any) => ({
+    params: { code: party.code },
+    props: { party, snapshot },
+  }));
+}
+
+const { party, snapshot } = Astro.props as any;
+const ogHash = createHash("sha256").update(`${party.name}|Pejabat yang terpilih`).digest("hex").slice(0, 12);
+const ogImage = `/og/partai.${ogHash}.png`;
+const positions = snapshot.positions
+  .filter((p: any) => p.party === party.id)
+  .sort((a: any, b: any) => {
+    const pa = snapshot.personById.get(a.person)?.full_name || "";
+    const pb = snapshot.personById.get(b.person)?.full_name || "";
+    return pa.localeCompare(pb, "id");
+  });
+---
+
+<BaseLayout title={party.name} description={`Pejabat yang terpilih dari ${party.name}.`} image={ogImage}>
+  <section class="hero">
+    <h1>{party.name}</h1>
+    <p class="lede">{party.short_name} · {positions.length} jabatan terverifikasi.</p>
+  </section>
+  <ul class="principles">
+    {positions.map((position: any) => {
+      const person = snapshot.personById.get(position.person);
+      const institution = snapshot.institutionById.get(position.institution);
+      const dapil = position.dapil ? snapshot.dapilById.get(position.dapil) : null;
+      return (
+        <li>
+          <a href={`/orang/${person?.slug}`}>{person?.full_name || position.person}</a>
+          <span class="note"> — {position.title}, {institution?.name}{dapil ? ` · ${dapil.name}` : ""} · sejak {formatDate(position.start_date, position.start_date_precision)}</span>
+        </li>
+      );
+    })}
+  </ul>
+</BaseLayout>

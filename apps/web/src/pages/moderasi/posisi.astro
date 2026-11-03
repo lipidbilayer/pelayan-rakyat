@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Detail posisi" description="Detail dan aksi verifikasi posisi." noindex>
+  <section class="hero">
+    <p class="eyebrow">Moderasi</p>
+    <h1>Detail posisi</h1>
+    <p class="lede">
+      <a href="/moderasi">Kembali ke antrian</a>
+    </p>
+  </section>
+
+  <div id="moderasi-root" data-page="detail"></div>
+
+  <script is:inline src="/scripts/moderasi.js" defer></script>
+</BaseLayout>

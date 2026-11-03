@@ -1,0 +1,99 @@
+# Pelayan Rakyat - Caddy config.
+#
+# SITE_ADDRESS controls the listener:
+#   http://:80              before a domain exists (plain HTTP on the IP)
+#   pelayanrakyat.id        once DNS points here (automatic HTTPS)
+#
+# PocketBase is never published to the host. Caddy is the only public entry.
+
+# Baseline headers, imported by normal routes and by error responses.
+(pelayan_security_headers) {
+	header {
+		-Server
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "DENY"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+	}
+}
+
+# The static site has no inline scripts or styles. Pagefind compiles its local
+# search index with WebAssembly, so it needs 'wasm-unsafe-eval'.
+(pelayan_csp) {
+	header Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; font-src 'self'; style-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self'; manifest-src 'self'"
+}
+
+{$SITE_ADDRESS:http://:80} {
+	encode zstd gzip
+
+	import pelayan_security_headers
+
+	# HSTS must only be sent over HTTPS. On the IP/HTTP setup this matcher
+	# does nothing; with a domain it activates automatically.
+	@https expression {scheme} == "https"
+	header @https Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+	# PocketBase admin is not exposed on the public listener.
+	@admin path /_ /_/*
+	handle @admin {
+		respond "Not Found" 404
+	}
+
+	# Public PocketBase API.
+	handle /api/* {
+		reverse_proxy pocketbase:8090 {
+			flush_interval -1
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	# Static Astro site.
+	root * /srv/site
+	handle {
+		import pelayan_csp
+
+		# Hashed/generated assets are immutable; HTML and small mutable files
+		# stay short-lived. The matchers are mutually exclusive so the more
+		# specific rule cannot be overwritten by a catch-all.
+		@hashed path /_astro/* /pagefind/*
+		header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+		@short_lived not path /_astro/* /pagefind/*
+		header @short_lived Cache-Control "public, max-age=60, must-revalidate"
+
+		try_files {path} {path}/ {path}/index.html
+		file_server
+	}
+
+	# Astro's 404 page for missing paths. Error routes do not inherit the
+	# normal route headers, so import the baseline ones here too.
+	handle_errors {
+		import pelayan_security_headers
+		import pelayan_csp
+
+		@not_found expression {err.status_code} == 404
+		route @not_found {
+			rewrite * /404.html
+			file_server
+		}
+		respond "{err.status_code} {err.status_text}" {err.status_code}
+	}
+}
+
+# Admin listener. Bind this to 127.0.0.1 for an SSH tunnel, or to a Tailscale
+# address when Tailscale is installed on the host. It is never published on the
+# public interfaces.
+{$ADMIN_LISTEN_ADDRESS:http://127.0.0.1:8081} {
+	import pelayan_security_headers
+
+	handle /_/* {
+		reverse_proxy pocketbase:8090 {
+			flush_interval -1
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	handle {
+		respond "Not Found" 404
+	}
+}

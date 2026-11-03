@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { loadSnapshot, formatDate, initials } from "../../../data/api";
+
+export async function getStaticPaths() {
+  const snapshot = await loadSnapshot();
+  return snapshot.dapils
+    .filter((d: any) => d.level === "dprd_dki")
+    .map((d: any) => ({
+      params: { n: d.code.replace("dprd-dki-", "") },
+      props: { dapil: d, snapshot },
+    }));
+}
+
+const { dapil, snapshot } = Astro.props as any;
+const members = snapshot.positions
+  .filter((p: any) => p.dapil === dapil.id && p.status === "active")
+  .sort((a: any, b: any) => {
+    const pa = snapshot.personById.get(a.person)?.full_name || "";
+    const pb = snapshot.personById.get(b.person)?.full_name || "";
+    return pa.localeCompare(pb, "id");
+  });
+---
+
+<BaseLayout title={`Dapil ${dapil.name}`} description={`Anggota DPRD DKI Jakarta untuk ${dapil.name}.`}>
+  <section class="hero">
+    <h1>{dapil.name}</h1>
+    <p class="lede">{members.length} dari {dapil.seats} kursi.</p>
+  </section>
+  <ul class="principles">
+    {members.map((position: any) => {
+      const person = snapshot.personById.get(position.person);
+      const party = position.party ? snapshot.partyById.get(position.party) : null;
+      return (
+        <li>
+          <a href={`/orang/${person?.slug}`}>{person?.full_name || position.person}</a>
+          <span class="note"> — {position.komisi || "Tanpa komisi"}{party ? ` · ${party.short_name || party.name}` : ""} · sejak {formatDate(position.start_date, position.start_date_precision)}</span>
+        </li>
+      );
+    })}
+  </ul>
+</BaseLayout>

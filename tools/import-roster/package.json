@@ -1,0 +1,19 @@
+{
+  "name": "import-roster",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "npm run build && node --test dist/src/test/*.test.js",
+    "start": "node dist/src/cli.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "24.10.0"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

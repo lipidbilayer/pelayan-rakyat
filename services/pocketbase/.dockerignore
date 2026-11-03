@@ -1,0 +1,6 @@
+pb_data/
+*.db
+*.db-shm
+*.db-wal
+backups/
+*.zip

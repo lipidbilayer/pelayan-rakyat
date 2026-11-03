@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { createHash } from "node:crypto";
+import { loadSnapshot, formatDate } from "../data/api";
+
+const snapshot = await loadSnapshot();
+const ogHash = createHash("sha256").update("Polda dan Polres|Riwayat jabatan").digest("hex").slice(0, 12);
+const ogImage = `/og/polisi.${ogHash}.png`;
+const institutions = snapshot.institutions
+  .filter((i: any) => i.kind === "polda_metro" || i.kind === "polres")
+  .sort((a: any, b: any) => a.name.localeCompare(b.name, "id"));
+
+function positionsFor(institutionId: string) {
+  return snapshot.positions
+    .filter((p: any) => p.institution === institutionId)
+    .sort((a: any, b: any) => {
+      const da = a.start_date || "";
+      const db = b.start_date || "";
+      return da < db ? 1 : da > db ? -1 : 0;
+    });
+}
+---
+
+<BaseLayout image={ogImage} title="Polda dan Polres Metro Jaya" description="Kapolda, wakapolda dan kapolres di wilayah Jakarta.">
+  <section class="hero">
+    <h1>Polda Metro Jaya dan Polres</h1>
+    <p class="lede">Polri wajib netral secara politik (UU No. 2/2002).</p>
+  </section>
+  {institutions.map((institution: any) => (
+    <section aria-labelledby={institution.code}>
+      <h2 id={institution.code}>{institution.name}</h2>
+      <ul class="principles">
+        {positionsFor(institution.id).map((position: any) => {
+          const person = snapshot.personById.get(position.person);
+          return (
+            <li>
+              <a href={`/orang/${person?.slug}`}>{person?.full_name || position.person}</a>
+              <span class="note"> — {position.title}{position.rank ? `, ${position.rank}` : ""}</span>
+              <span class="note"> · {formatDate(position.start_date, position.start_date_precision)}{position.end_date ? ` – ${formatDate(position.end_date, position.end_date_precision)}` : " – sekarang"}</span>
+              {position.status === "inactive" && <span class="note"> · Nonaktif</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  ))}
+</BaseLayout>

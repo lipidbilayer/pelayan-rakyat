@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Halaman tidak ditemukan" noindex>
+  <section class="hero">
+    <p class="eyebrow">404</p>
+    <h1>Halaman tidak ditemukan.</h1>
+    <p class="lede">
+      Alamat ini tidak ada, atau halamannya sudah dipindahkan. Tidak ada yang
+      dihapus permanen, tetapi tautan lama bisa berubah.
+    </p>
+    <form class="search-box" action="/cari" method="get">
+      <input name="q" type="search" placeholder="Cari nama pejabat…" />
+      <button class="button" type="submit">Cari</button>
+    </form>
+    <div class="actions">
+      <a class="button" href="/">Kembali ke beranda</a>
+    </div>
+  </section>
+</BaseLayout>

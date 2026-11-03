@@ -1,0 +1,186 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadSnapshot, formatDate, initials } from "../../data/api";
+import { createHash } from "node:crypto";
+
+export async function getStaticPaths() {
+  const snapshot = await loadSnapshot();
+  return snapshot.people.map((person: any) => ({
+    params: { slug: person.slug },
+    props: { person, snapshot },
+  }));
+}
+
+const { person, snapshot } = Astro.props as any;
+const currentOg = (snapshot.positionsByPerson.get(person.id) || []).find((p: any) => p.status === "active") || (snapshot.positionsByPerson.get(person.id) || [])[0];
+const currentInstitutionOg = currentOg ? snapshot.institutionById.get(currentOg.institution) : null;
+const ogPost = currentOg ? `${currentOg.title} · ${currentInstitutionOg?.name || ""}` : "Pelayan Rakyat";
+const ogHash = createHash("sha256").update(`${person.full_name}|${ogPost}`).digest("hex").slice(0, 12);
+const ogImage = `/og/${person.slug}.${ogHash}.png`;
+const personId = person.id;
+const positions = (snapshot.positionsByPerson.get(personId) || []).slice().sort((a: any, b: any) => {
+  const da = a.start_date || "";
+  const db = b.start_date || "";
+  return da < db ? 1 : da > db ? -1 : 0;
+});
+const currentPositions = positions.filter((p: any) => p.status === "active");
+
+const successors = new Map<string, any>();
+for (const p of snapshot.positions) {
+  if (p.replaces) successors.set(p.replaces, p);
+}
+
+// Collect sources used by this person.
+const sourceIds = new Set<string>();
+for (const position of positions) {
+  for (const id of position.sources || []) sourceIds.add(id);
+  for (const event of snapshot.statusEventsByPosition.get(position.id) || []) {
+    for (const id of event.sources || []) sourceIds.add(id);
+  }
+}
+const personSources = Array.from(sourceIds)
+  .map((id) => snapshot.sourceById.get(id))
+  .filter(Boolean);
+const sourceNumber = new Map(personSources.map((source, index) => [source.id, index + 1]));
+
+function sourceFootnotes(ids: string[]): string {
+  return (ids || [])
+    .map((id) => sourceNumber.get(id))
+    .filter(Boolean)
+    .map((n) => `[${n}]`)
+    .join("");
+}
+
+function personName(id: string): string {
+  const found = snapshot.personById.get(id);
+  return found ? found.full_name : id;
+}
+
+// Build a timeline.
+const timeline: any[] = [];
+for (const position of positions) {
+  const institution = snapshot.institutionById.get(position.institution);
+  timeline.push({ kind: "start", date: position.start_date || "", position, institution });
+  if (position.status === "ended" && position.end_date) {
+    timeline.push({ kind: "end", date: position.end_date, position, institution });
+  }
+  for (const event of snapshot.statusEventsByPosition.get(position.id) || []) {
+    timeline.push({ kind: "event", date: event.effective_date, position, institution, event });
+  }
+}
+timeline.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+
+const title = person.full_name;
+const description = currentPositions.length
+  ? `${person.full_name}: ${currentPositions.map((p: any) => p.title).join(", ")}.`
+  : `${person.full_name} — Pelayan Rakyat.`;
+---
+
+<BaseLayout title={title} description={description} image={ogImage}>
+  <section class="hero">
+    <div class="initials-block" aria-hidden="true">{initials(person.full_name)}</div>
+    <h1>{person.full_name}</h1>
+    <div class="visually-hidden">
+      {(person.published_names || []).join(" ")}
+      {(person.name_variants || []).join(" ")}
+      <span data-pagefind-filter="body">{currentPositions[0] ? (snapshot.institutionById.get(currentPositions[0].institution)?.kind || "") : ""}</span>
+      {currentPositions.map((p: any) => {
+        const party = p.party ? snapshot.partyById.get(p.party) : null;
+        const dapil = p.dapil ? snapshot.dapilById.get(p.dapil) : null;
+        return (
+          <>
+            <span data-pagefind-filter="party">{party?.short_name || party?.name || ""}</span>
+            <span data-pagefind-filter="dapil">{dapil?.name || ""}</span>
+            <span data-pagefind-filter="status">{p.status}</span>
+          </>
+        );
+      })}
+    </div>
+    {currentPositions.map((position: any) => {
+      const institution = snapshot.institutionById.get(position.institution);
+      const party = position.party ? snapshot.partyById.get(position.party) : null;
+      const dapil = position.dapil ? snapshot.dapilById.get(position.dapil) : null;
+      return (
+        <p class="lede">
+          {position.title} — {institution?.name || position.institution}
+          {dapil ? ` · ${dapil.name}` : ""}
+          {position.faction ? ` · Fraksi ${position.faction}` : ""}
+          {position.komisi ? ` · ${position.komisi}` : ""}
+          {party ? ` · ${party.short_name || party.name}` : ""}
+          {position.is_acting ? " · Plt." : ""}
+          {position.status === "inactive" ? " · Nonaktif" : ""}
+        </p>
+      );
+    })}
+    {currentPositions.length === 0 && <p class="note">Tidak ada jabatan aktif yang terverifikasi.</p>}
+  </section>
+
+  <hr class="rule" />
+
+  <section aria-labelledby="riwayat">
+    <h2 id="riwayat">Riwayat jabatan</h2>
+    {timeline.length === 0 && <p class="note">Belum ada riwayat jabatan terverifikasi.</p>}
+    <ol class="timeline">
+      {timeline.map((item: any) => {
+        const position = item.position;
+        const predecessor = position.replaces ? snapshot.positions.find((p: any) => p.id === position.replaces) : null;
+        const successor = successors.get(position.id);
+        return (
+          <li>
+            <p class="timeline-date">
+              {item.kind === "start" && formatDate(position.start_date, position.start_date_precision)}
+              {item.kind === "end" && formatDate(position.end_date, position.end_date_precision)}
+              {item.kind === "event" && formatDate(item.event.effective_date, "day")}
+              {sourceFootnotes(item.kind === "event" ? item.event.sources : position.sources)}
+            </p>
+            <p>
+              {item.kind === "start" && `${position.title} — ${item.institution?.name || position.institution}`}
+              {item.kind === "end" && `Selesai: ${position.title} — ${item.institution?.name || position.institution}`}
+              {item.kind === "event" && `${item.event.status === "inactive" ? "Dinonaktifkan" : item.event.status === "active" ? "Diaktifkan kembali" : "Berakhir"}${item.event.note ? ` — ${item.event.note}` : ""}`}
+            </p>
+            {item.kind === "start" && predecessor && (
+              <p class="note">Menggantikan {personName(predecessor.person)}.</p>
+            )}
+            {successor && (
+              <p class="note">Digantikan oleh {personName(successor.person)}.</p>
+            )}
+            {position.is_acting && <p class="note">Plt.</p>}
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  <hr class="rule" />
+
+  <section aria-labelledby="catatan">
+    <h2 id="catatan">Catatan</h2>
+    <p class="note">Belum ada catatan terverifikasi untuk {person.full_name}. Pernyataan, janji dan kinerja akan tampil di sini.</p>
+  </section>
+
+  <hr class="rule" />
+
+  <section aria-labelledby="sumber">
+    <h2 id="sumber">Sumber</h2>
+    {personSources.length === 0 && <p class="note">Belum ada sumber.</p>}
+    <ol class="sources">
+      {personSources.map((source: any) => (
+        <li>
+          <a href={source.url} target="_blank" rel="noopener noreferrer">{source.url}</a>
+          <span class="note"> — {source.publisher || "Sumber"}{source.published_at ? `, ${formatDate(source.published_at, "day")}` : ""}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <hr class="rule" />
+
+  <section aria-labelledby="bagikan">
+    <h2 id="bagikan" class="visually-hidden">Bagikan</h2>
+    <div class="actions">
+      <a class="button button--quiet" href={`https://wa.me/?text=${encodeURIComponent(person.full_name + " — " + Astro.site)}`}>Bagikan ke WhatsApp</a>
+      <a class="button button--quiet" href={`/koreksi?orang=${person.slug}`}>Laporkan kesalahan</a>
+    </div>
+    <p class="note">Terakhir diperbarui {formatDate(person.updated || person.created, "day")}.</p>
+  </section>
+</BaseLayout>

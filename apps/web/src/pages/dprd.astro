@@ -1,0 +1,111 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { createHash } from "node:crypto";
+import { loadSnapshot, formatDate, initials } from "../data/api";
+
+const snapshot = await loadSnapshot();
+const ogHash = createHash("sha256").update("DPRD DKI Jakarta|Komposisi dan anggota").digest("hex").slice(0, 12);
+const ogImage = `/og/dprd.${ogHash}.png`;
+const members = snapshot.positions.filter((p: any) => {
+  const institution = snapshot.institutionById.get(p.institution);
+  return p.status === "active" && institution?.kind === "dprd_dki" && p.title === "Anggota";
+});
+
+const leadership = snapshot.positions.filter((p: any) => {
+  const institution = snapshot.institutionById.get(p.institution);
+  return institution?.kind === "dprd_dki" && (p.title === "Ketua" || p.title === "Wakil Ketua");
+}).sort((a: any, b: any) => (a.title < b.title ? -1 : 1));
+
+// Composition by party.
+const seatsByParty = new Map<string, number>();
+for (const member of members) {
+  const party = member.party ? snapshot.partyById.get(member.party) : null;
+  const key = party ? (party.short_name || party.name) : "Independen";
+  seatsByParty.set(key, (seatsByParty.get(key) || 0) + 1);
+}
+const composition = Array.from(seatsByParty.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+const totalSeats = composition.reduce((sum, item) => sum + item[1], 0) || 1;
+
+const dapils = snapshot.dapils
+  .filter((d: any) => d.level === "dprd_dki")
+  .sort((a: any, b: any) => a.code.localeCompare(b.code, undefined, { numeric: true }));
+
+const komisiSet = Array.from(new Set(members.map((m: any) => m.komisi).filter(Boolean))).sort();
+
+function membersOfDapil(code: string) {
+  const dapil = dapils.find((d: any) => d.code === code);
+  if (!dapil) return [];
+  return members.filter((m: any) => m.dapil === dapil.id);
+}
+---
+
+<BaseLayout image={ogImage} title="DPRD DKI Jakarta" description="Komposisi dan anggota DPRD DKI Jakarta.">
+  <section class="hero">
+    <h1>DPRD DKI Jakarta</h1>
+    <p class="lede">Ketua, wakil ketua, komposisi partai, dan anggota per dapil.</p>
+  </section>
+
+  <section aria-labelledby="pimpinan">
+    <h2 id="pimpinan">Pimpinan</h2>
+    <ul class="principles">
+      {leadership.map((position: any) => {
+        const person = snapshot.personById.get(position.person);
+        const party = position.party ? snapshot.partyById.get(position.party) : null;
+        return (
+          <li>
+            <strong>{person?.full_name || position.person}</strong>
+            <span class="note"> — {position.title}{party ? `, ${party.short_name || party.name}` : ""} · sejak {formatDate(position.start_date, position.start_date_precision)}</span>
+            <a href={`/orang/${person?.slug}`}>Profil</a>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+
+  <section aria-labelledby="komposisi">
+    <h2 id="komposisi">Komposisi partai</h2>
+    <svg viewBox="0 0 640 240" role="img" aria-label="Komposisi kursi DPRD DKI Jakarta" style="width:100%;height:auto">
+      {composition.map((item, index) => {
+        const width = Math.round((item[1] / totalSeats) * 560);
+        const y = 20 + index * 28;
+        return (
+          <g>
+            <rect x="40" y={y} width={width} height="20" fill="currentColor" opacity="0.75"></rect>
+            <text x="32" y={y + 14} text-anchor="end" font-size="12">{item[0]}</text>
+            <text x={40 + width + 8} y={y + 14} font-size="12">{item[1]}</text>
+          </g>
+        );
+      })}
+    </svg>
+  </section>
+
+  <section aria-labelledby="komisi">
+    <h2 id="komisi">Komisi</h2>
+    <ul class="actions">
+      {komisiSet.map((komisi) => (
+        <li><a href={`#komisi-${String(komisi).toLowerCase().replace(/\s+/g, "-")}`}>{komisi}</a></li>
+      ))}
+    </ul>
+  </section>
+
+  <section aria-labelledby="dapil">
+    <h2 id="dapil">Anggota per dapil</h2>
+    {dapils.map((dapil: any) => (
+      <div>
+        <h3><a href={`/dprd/dapil/${dapil.code.replace("dprd-dki-", "")}`}>{dapil.name}</a> ({membersOfDapil(dapil.code).length}/{dapil.seats} kursi)</h3>
+        <ul class="principles">
+          {membersOfDapil(dapil.code).map((member: any) => {
+            const person = snapshot.personById.get(member.person);
+            const party = member.party ? snapshot.partyById.get(member.party) : null;
+            return (
+              <li>
+                <a href={`/orang/${person?.slug}`}>{person?.full_name || member.person}</a>
+                <span class="note"> — {member.komisi || "Tanpa komisi"}{party ? ` · ${party.short_name || party.name}` : ""}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))}
+  </section>
+</BaseLayout>

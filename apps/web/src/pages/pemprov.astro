@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { createHash } from "node:crypto";
+import { loadSnapshot, formatDate, initials } from "../data/api";
+
+const snapshot = await loadSnapshot();
+const ogHash = createHash("sha256").update("Pemprov DKI Jakarta|Gubernur dan wali kota").digest("hex").slice(0, 12);
+const ogImage = `/og/pemprov.${ogHash}.png`;
+const heads = snapshot.positions
+  .filter((p: any) => {
+    const institution = snapshot.institutionById.get(p.institution);
+    return p.status === "active" && (institution?.kind === "governor_office" || institution?.kind === "city_government");
+  })
+  .sort((a: any, b: any) => {
+    const ia = snapshot.institutionById.get(a.institution)?.name || "";
+    const ib = snapshot.institutionById.get(b.institution)?.name || "";
+    return ia < ib ? -1 : ia > ib ? 1 : 0;
+  });
+---
+
+<BaseLayout image={ogImage} title="Pemprov DKI Jakarta" description="Gubernur, wakil gubernur, wali kota dan bupati di DKI Jakarta.">
+  <section class="hero">
+    <h1>Pemerintah Provinsi DKI Jakarta</h1>
+    <p class="lede">Gubernur, wakil gubernur, wali kota dan bupati yang menjabat.</p>
+  </section>
+  <ul class="principles">
+    {heads.map((position: any) => {
+      const person = snapshot.personById.get(position.person);
+      const institution = snapshot.institutionById.get(position.institution);
+      const party = position.party ? snapshot.partyById.get(position.party) : null;
+      return (
+        <li>
+          <div class="initials-block small" aria-hidden="true">{initials(person?.full_name || "")}</div>
+          <strong>{person?.full_name || position.person}</strong>
+          <span class="note"> — {position.title}, {institution?.name}</span>
+          {party && <span class="party-chip">{party.short_name || party.name}</span>}
+          <span class="note"> · sejak {formatDate(position.start_date, position.start_date_precision)}</span>
+          {position.is_acting && <span class="note"> · Plt.</span>}
+          {position.status === "inactive" && <span class="note"> · Nonaktif</span>}
+          <a href={`/orang/${person?.slug}`}>Profil</a>
+        </li>
+      );
+    })}
+  </ul>
+</BaseLayout>
