@@ -31,3 +31,7 @@ pagefind/
 # Local test artefacts
 backups/
 *.zip
+
+# Draft research data must not be committed
+data/drafts/
+.docs/data/
