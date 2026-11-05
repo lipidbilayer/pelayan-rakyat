@@ -28,6 +28,7 @@ RUN set -eux; \
 COPY entrypoint.sh /usr/local/bin/pocketbase-entrypoint
 COPY pb_migrations /pb/pb_migrations
 COPY pb_hooks /pb/pb_hooks
+COPY config /pb/config
 
 RUN chmod 0755 /usr/local/bin/pocketbase-entrypoint
 

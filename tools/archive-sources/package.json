@@ -1,0 +1,13 @@
+{
+  "name": "archive-sources",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

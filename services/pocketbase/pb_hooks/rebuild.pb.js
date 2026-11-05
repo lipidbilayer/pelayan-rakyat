@@ -1,6 +1,6 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-const PUBLIC_COLLECTIONS = ["parties", "people", "positions", "status_events"];
+const PUBLIC_COLLECTIONS = ["parties", "people", "positions", "status_events", "records", "promise_updates", "replies"];
 
 for (const collectionName of PUBLIC_COLLECTIONS) {
   onRecordCreate((e) => {

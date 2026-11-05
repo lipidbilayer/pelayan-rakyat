@@ -3,7 +3,7 @@
 
 const TRACKED_COLLECTIONS = [
   "parties", "people", "institutions", "dapil", "sources", "positions",
-  "status_events",
+  "status_events", "topics", "records", "promise_updates", "replies",
 ];
 
 for (const collectionName of TRACKED_COLLECTIONS) {

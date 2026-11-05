@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadSnapshot, formatDate } from "../data/api";
+
+const snapshot = await loadSnapshot();
+const promises = snapshot.records.filter((r: any) => r.type === "promise").map((r: any) => {
+  const updates = (snapshot.promiseUpdatesByRecord.get(r.id) || []).slice().sort((a: any, b: any) => (a.effective_date < b.effective_date ? 1 : -1));
+  const status = updates.length ? updates[0].status : "not_rated";
+  return { record: r, status, updates };
+}).sort((a: any, b: any) => {
+  const pa = snapshot.personById.get(a.record.person)?.full_name || "";
+  const pb = snapshot.personById.get(b.record.person)?.full_name || "";
+  return pa.localeCompare(pb, "id");
+});
+
+const labels: Record<string, string> = {
+  not_rated: "Belum dinilai", in_progress: "Sedang berjalan", kept: "Ditepati",
+  partially_kept: "Sebagian ditepati", stalled: "Mandek", broken: "Diingkari",
+};
+
+const counts = Object.keys(labels).reduce((acc: any, key) => {
+  acc[key] = promises.filter((p: any) => p.status === key).length;
+  return acc;
+}, {});
+---
+
+<BaseLayout title="Janji" description="Pelacak janji pejabat.">
+  <section class="hero">
+    <h1>Janji</h1>
+    <p class="lede">Status janji berdasarkan pembaruan terverifikasi terbaru.</p>
+  </section>
+  <p class="note">
+    Belum dinilai {counts.not_rated} · Sedang berjalan {counts.in_progress} · Ditepati {counts.kept} · Sebagian {counts.partially_kept} · Mandek {counts.stalled} · Diingkari {counts.broken}
+  </p>
+  <ul class="principles">
+    {promises.map(({ record, status, updates }: any) => {
+      const person = snapshot.personById.get(record.person);
+      const deadlinePassed = record.promise_deadline && new Date(record.promise_deadline) < new Date() && status !== "kept";
+      return (
+        <li>
+          <a href={`/catatan/${record.slug}`}>{record.title}</a>
+          <span class="note"> — {person?.full_name || record.person}</span>
+          <span class="note"> — {labels[status] || status}</span>
+          {record.promise_deadline && <span class="note"> — tenggat {formatDate(record.promise_deadline, "day")}{deadlinePassed ? " (tenggat terlewat)" : ""}</span>}
+          {updates[0] && <span class="note"> — pembaruan terakhir {formatDate(updates[0].effective_date, "day")}</span>}
+        </li>
+      );
+    })}
+  </ul>
+</BaseLayout>

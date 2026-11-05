@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { loadSnapshot, formatDate } from "../../../data/api";
+
+export async function getStaticPaths() {
+  const snapshot = await loadSnapshot();
+  return snapshot.people.map((person: any) => ({
+    params: { slug: person.slug },
+    props: { person, snapshot },
+  }));
+}
+
+const { person, snapshot } = Astro.props as any;
+const records = (snapshot.recordsByPerson.get(person.id) || []).slice().sort((a: any, b: any) => (a.occurred_at < b.occurred_at ? 1 : -1));
+const byType = {
+  statement: records.filter((r: any) => r.type === "statement"),
+  promise: records.filter((r: any) => r.type === "promise"),
+  action: records.filter((r: any) => r.type === "action"),
+  vote: records.filter((r: any) => r.type === "vote"),
+};
+---
+
+<BaseLayout title={`Catatan ${person.full_name}`} description={`Semua catatan terverifikasi untuk ${person.full_name}.`}>
+  <section class="hero">
+    <h1>Catatan {person.full_name}</h1>
+  </section>
+  {records.length === 0 && <p class="note">Belum ada catatan terverifikasi.</p>}
+  {(["statement", "promise", "action", "vote"] as const).map((type) => {
+    const list = byType[type];
+    if (list.length === 0) return null;
+    const label = type === "statement" ? "Pernyataan" : type === "promise" ? "Janji" : type === "action" ? "Tindakan" : "Suara";
+    return (
+      <section>
+        <h2>{label}</h2>
+        <ul class="principles">
+          {list.map((record: any) => (
+            <li>
+              <a href={`/catatan/${record.slug}`}>{record.title}</a>
+              <span class="note"> — {formatDate(record.occurred_at, record.occurred_at_precision)}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  })}
+</BaseLayout>

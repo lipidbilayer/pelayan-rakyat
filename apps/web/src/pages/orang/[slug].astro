@@ -155,7 +155,36 @@ const description = currentPositions.length
 
   <section aria-labelledby="catatan">
     <h2 id="catatan">Catatan</h2>
-    <p class="note">Belum ada catatan terverifikasi untuk {person.full_name}. Pernyataan, janji dan kinerja akan tampil di sini.</p>
+    {(() => {
+      const records = (snapshot.recordsByPerson.get(person.id) || []).slice().sort((a: any, b: any) => (a.occurred_at < b.occurred_at ? 1 : -1));
+      const counts = {
+        statement: records.filter((r: any) => r.type === "statement").length,
+        blunder: records.filter((r: any) => r.type === "statement" && r.blunder_category).length,
+        promise: records.filter((r: any) => r.type === "promise").length,
+        action: records.filter((r: any) => r.type === "action").length,
+        vote: records.filter((r: any) => r.type === "vote").length,
+      };
+      if (records.length === 0) {
+        return <p class="note">Belum ada catatan terverifikasi untuk {person.full_name}. Pernyataan, janji dan kinerja akan tampil di sini.</p>;
+      }
+      return (
+        <>
+          <p class="note">
+            {counts.statement} pernyataan · {counts.blunder} bermasalah · {counts.promise} janji · {counts.action} tindakan · {counts.vote} suara
+          </p>
+          <ul class="principles">
+            {records.slice(0, 5).map((record: any) => (
+              <li>
+                <a href={`/catatan/${record.slug}`}>{record.title}</a>
+                <span class="note"> — {record.type === "statement" ? "Pernyataan" : record.type === "promise" ? "Janji" : record.type === "action" ? "Tindakan" : "Suara"} · {formatDate(record.occurred_at, record.occurred_at_precision)}</span>
+                {record.blunder_category && <span class="note"> · Pernyataan bermasalah</span>}
+              </li>
+            ))}
+          </ul>
+          {records.length > 5 && <p><a href={`/orang/${person.slug}/catatan`}>Semua catatan ({records.length})</a></p>}
+        </>
+      );
+    })()}
   </section>
 
   <hr class="rule" />

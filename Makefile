@@ -24,3 +24,6 @@ logs:
 
 stats:
 	docker stats --no-stream
+
+verify:
+	./scripts/verify.sh

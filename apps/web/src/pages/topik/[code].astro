@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadSnapshot, formatDate } from "../../data/api";
+
+export async function getStaticPaths() {
+  const snapshot = await loadSnapshot();
+  return snapshot.topics.map((topic: any) => ({
+    params: { code: topic.code },
+    props: { topic, snapshot },
+  }));
+}
+
+const { topic, snapshot } = Astro.props as any;
+const records = (snapshot.recordsByTopic.get(topic.id) || []).slice().sort((a: any, b: any) => (a.occurred_at < b.occurred_at ? 1 : -1));
+---
+
+<BaseLayout title={topic.name} description={topic.description || topic.name}>
+  <section class="hero">
+    <h1>{topic.name}</h1>
+    <p class="lede">{topic.description}</p>
+  </section>
+  <ul class="principles">
+    {records.map((record: any) => {
+      const person = snapshot.personById.get(record.person);
+      return (
+        <li>
+          <a href={`/catatan/${record.slug}`}>{record.title}</a>
+          <span class="note"> — {person?.full_name || record.person} · {formatDate(record.occurred_at, record.occurred_at_precision)}</span>
+        </li>
+      );
+    })}
+  </ul>
+</BaseLayout>

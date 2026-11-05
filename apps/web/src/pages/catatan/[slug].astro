@@ -1,0 +1,147 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadSnapshot, formatDate } from "../../data/api";
+
+export async function getStaticPaths() {
+  const snapshot = await loadSnapshot();
+  return snapshot.records.map((record: any) => ({
+    params: { slug: record.slug },
+    props: { record, snapshot },
+  }));
+}
+
+const { record, snapshot } = Astro.props as any;
+const person = snapshot.personById.get(record.person);
+const position = record.position ? snapshot.positions.find((p: any) => p.id === record.position) : null;
+const institution = position ? snapshot.institutionById.get(position.institution) : null;
+const replies = (snapshot.repliesByRecord.get(record.id) || []).sort((a: any, b: any) => (a.received_at < b.received_at ? 1 : -1));
+const changes = (snapshot.recordChangesByRecord.get(record.id) || []).sort((a: any, b: any) => (a.changed_at < b.changed_at ? 1 : -1));
+const updates = (snapshot.promiseUpdatesByRecord.get(record.id) || []).slice().sort((a: any, b: any) => (a.effective_date < b.effective_date ? 1 : -1));
+const promiseStatus = updates.length ? updates[0].status : "not_rated";
+const promiseLabels: Record<string, string> = {
+  not_rated: "Belum dinilai", in_progress: "Sedang berjalan", kept: "Ditepati",
+  partially_kept: "Sebagian ditepati", stalled: "Mandek", broken: "Diingkari",
+};
+const blunderLabel = record.blunder_category === "factually_wrong" ? "Keliru secara fakta" : record.blunder_category === "insensitive" ? "Tidak peka" : record.blunder_category === "out_of_touch" ? "Jauh dari kenyataan" : record.blunder_category === "self_contradiction" ? "Bertentangan dengan pernyataan sebelumnya" : "";
+const legalLabels: Record<string, string> = {
+  reported: "Dilaporkan", investigated: "Diselidiki/Disidik", suspect: "Ditetapkan tersangka", charged: "Didakwa", convicted: "Divonis bersalah", acquitted: "Divonis bebas", dropped: "Dihentikan / SP3", appeal: "Banding/Kasasi",
+};
+const title = record.title;
+---
+
+<BaseLayout title={title} description={record.summary || record.title}>
+  <section class="hero">
+    <p class="eyebrow">{record.type === "statement" ? "Pernyataan" : record.type === "promise" ? "Janji" : record.type === "action" ? "Tindakan" : "Suara"}</p>
+    <h1>{record.title}</h1>
+    <p class="lede">{formatDate(record.occurred_at, record.occurred_at_precision)}{record.event_name ? ` · ${record.event_name}` : ""}</p>
+    {record.blunder_category && <p class="note"><strong>{blunderLabel}</strong></p>}
+    {record.type === "promise" && <p class="note">Status: {promiseLabels[promiseStatus] || promiseStatus}</p>}
+    {record.type === "action" && record.action_kind === "legal_case" && record.legal_status && <p class="note"><strong>{legalLabels[record.legal_status] || record.legal_status}</strong></p>}
+  </section>
+
+  <p>
+    <a href={`/orang/${person?.slug}`}>{person?.full_name || record.person}</a>
+    {position && <span class="note"> — sebagai {position.title}, {institution?.name || position.institution}</span>}
+  </p>
+
+  {record.quote && (
+    <blockquote>
+      <p>{record.quote}</p>
+      {record.video_url && record.video_start_seconds !== null && record.video_start_seconds !== undefined && (
+        <p><a href={`${record.video_url}${record.video_url.includes("?") ? "&" : "?"}t=${record.video_start_seconds}s`} target="_blank" rel="noopener noreferrer">Tonton di sumber asli (menit {Math.floor(record.video_start_seconds / 60)}:{String(record.video_start_seconds % 60).padStart(2, "0")})</a></p>
+      )}
+    </blockquote>
+  )}
+
+  <section aria-labelledby="konteks">
+    <h2 id="konteks">Konteks</h2>
+    <p>{record.context}</p>
+  </section>
+
+  {record.blunder_category && (
+    <section aria-labelledby="mengapa">
+      <h2 id="mengapa">Mengapa ini dicatat</h2>
+      <p>{record.blunder_reason}</p>
+      {record.blunder_category === "factually_wrong" && (
+        <>
+          <h3>Faktanya</h3>
+          <p>{record.fact_check}</p>
+        </>
+      )}
+      {record.blunder_category === "self_contradiction" && record.contradicts_record && (
+        <p><a href={`/catatan/${snapshot.records.find((r: any) => r.id === record.contradicts_record)?.slug}`}>Lihat pernyataan sebelumnya</a></p>
+      )}
+    </section>
+  )}
+
+  <section aria-labelledby="tanggapan">
+    <h2 id="tanggapan">Tanggapan</h2>
+    {record.follow_up_status && record.follow_up_status !== "none_yet" ? (
+      <p>{record.follow_up_status} {record.follow_up_date ? `· ${formatDate(record.follow_up_date, "day")}` : ""}</p>
+    ) : (
+      <p class="note">Belum ada tanggapan.</p>
+    )}
+  </section>
+
+  <section aria-labelledby="hak-jawab">
+    <h2 id="hak-jawab">Hak jawab</h2>
+    {replies.length === 0 && <p class="note">Belum ada hak jawab. Pejabat yang bersangkutan dapat mengirim tanggapan melalui halaman Koreksi.</p>}
+    {replies.map((reply: any) => (
+      <blockquote>
+        <p>{reply.text}</p>
+        <p class="note">{reply.responder_name}{reply.responder_role ? `, ${reply.responder_role}` : ""} · {formatDate(reply.received_at, "day")}</p>
+      </blockquote>
+    ))}
+  </section>
+
+  {record.type === "promise" && (
+    <section aria-labelledby="riwayat-status">
+      <h2 id="riwayat-status">Riwayat status</h2>
+      {updates.length === 0 && <p class="note">Belum ada pembaruan status.</p>}
+      <ol class="timeline">
+        {updates.map((update: any) => (
+          <li>
+            <p class="timeline-date">{formatDate(update.effective_date, "day")}</p>
+            <p>{update.status}</p>
+            {update.note && <p class="note">{update.note}</p>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  {record.type === "action" && record.action_kind === "legal_case" && (
+    <p class="note">Seseorang dianggap tidak bersalah sampai ada putusan pengadilan yang berkekuatan hukum tetap.</p>
+  )}
+
+  <section aria-labelledby="sumber">
+    <h2 id="sumber">Sumber</h2>
+    <ol class="sources">
+      {(record.sources || []).map((id: string, index: number) => {
+        const source = snapshot.sourceById.get(id);
+        return (
+          <li>
+            {source ? <a href={source.url} target="_blank" rel="noopener noreferrer">{source.url}</a> : id}
+            {source && <span class="note"> — {source.publisher || "Sumber"}{source.archived_url ? ` · <a href="${source.archived_url}">arsip</a>` : ""}</span>}
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  {changes.length > 0 && (
+    <section aria-labelledby="riwayat-perubahan">
+      <h2 id="riwayat-perubahan">Riwayat perubahan</h2>
+      <ul class="principles">
+        {changes.map((change: any) => (
+          <li>{change.changed_at} — {change.public_change_note}</li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <div class="actions">
+    <a class="button button--quiet" href={`https://wa.me/?text=${encodeURIComponent(record.title + " — " + Astro.site)}`}>Bagikan ke WhatsApp</a>
+    <a class="button button--quiet" href={`/koreksi?catatan=${record.slug}`}>Laporkan kesalahan</a>
+  </div>
+</BaseLayout>

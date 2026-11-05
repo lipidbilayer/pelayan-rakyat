@@ -70,5 +70,23 @@ const updated = new Date().toLocaleDateString("id-ID", { timeZone: "Asia/Jakarta
     </ul>
   </section>
 
+  <hr class="rule" />
+
+  <section aria-labelledby="catatan-terbaru">
+    <h2 id="catatan-terbaru">Catatan terbaru</h2>
+    {snapshot.recentRecords.length === 0 && <p class="note">Belum ada catatan terverifikasi.</p>}
+    <ul class="principles">
+      {snapshot.recentRecords.map((record: any) => {
+        const person = snapshot.personById.get(record.person);
+        return (
+          <li>
+            <a href={`/catatan/${record.slug}`}>{record.title}</a>
+            <span class="note"> — {person?.full_name || record.person} · {formatDate(record.occurred_at, record.occurred_at_precision)}</span>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+
   <p class="note">Data diperbarui {updated}.</p>
 </BaseLayout>

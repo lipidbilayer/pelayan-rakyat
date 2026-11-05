@@ -19,7 +19,7 @@ async function fetchCollection(name: string, filter?: string): Promise<any[]> {
 }
 
 export async function loadSnapshot() {
-  const [parties, people, institutions, dapils, sources, positions, statusEvents] = await Promise.all([
+  const [parties, people, institutions, dapils, sources, positions, statusEvents, topics, records, promiseUpdates, replies, recordChanges] = await Promise.all([
     fetchCollection("parties", "verification_status='verified'"),
     fetchCollection("people", "verification_status='verified'"),
     fetchCollection("institutions"),
@@ -27,6 +27,11 @@ export async function loadSnapshot() {
     fetchCollection("sources"),
     fetchCollection("positions", "verification_status='verified'"),
     fetchCollection("status_events", "verification_status='verified'"),
+    fetchCollection("topics"),
+    fetchCollection("records", "verification_status='verified'"),
+    fetchCollection("promise_updates", "verification_status='verified'"),
+    fetchCollection("replies", "status='published'"),
+    fetchCollection("record_changes"),
   ]);
 
   const partyById = new Map(parties.map((x) => [x.id, x]));
@@ -47,6 +52,43 @@ export async function loadSnapshot() {
     const list = statusEventsByPosition.get(event.position) || [];
     list.push(event);
     statusEventsByPosition.set(event.position, list);
+  }
+
+  const recordsByPerson = new Map<string, any[]>();
+  for (const record of records) {
+    const list = recordsByPerson.get(record.person) || [];
+    list.push(record);
+    recordsByPerson.set(record.person, list);
+  }
+
+  const recordsByTopic = new Map<string, any[]>();
+  for (const record of records) {
+    for (const topicId of record.topics || []) {
+      const list = recordsByTopic.get(topicId) || [];
+      list.push(record);
+      recordsByTopic.set(topicId, list);
+    }
+  }
+
+  const promiseUpdatesByRecord = new Map<string, any[]>();
+  for (const update of promiseUpdates) {
+    const list = promiseUpdatesByRecord.get(update.promise) || [];
+    list.push(update);
+    promiseUpdatesByRecord.set(update.promise, list);
+  }
+
+  const repliesByRecord = new Map<string, any[]>();
+  for (const reply of replies) {
+    const list = repliesByRecord.get(reply.record) || [];
+    list.push(reply);
+    repliesByRecord.set(reply.record, list);
+  }
+
+  const recordChangesByRecord = new Map<string, any[]>();
+  for (const change of recordChanges) {
+    const list = recordChangesByRecord.get(change.record) || [];
+    list.push(change);
+    recordChangesByRecord.set(change.record, list);
   }
 
   // Safety check against the last successful build manifest.
@@ -85,6 +127,14 @@ export async function loadSnapshot() {
     sourceById,
     positionsByPerson,
     statusEventsByPosition,
+    recordsByPerson,
+    recordsByTopic,
+    promiseUpdatesByRecord,
+    repliesByRecord,
+    recordChangesByRecord,
+    topics,
+    records,
+    recentRecords: records.slice().sort((a: any, b: any) => (a.occurred_at < b.occurred_at ? 1 : -1)).slice(0, 10),
     recentChanges,
     counts: {
       people: people.length,
@@ -93,6 +143,8 @@ export async function loadSnapshot() {
       institutions: institutions.length,
       dapils: dapils.length,
       sources: sources.length,
+      records: records.length,
+      topics: topics.length,
     },
   };
 }
