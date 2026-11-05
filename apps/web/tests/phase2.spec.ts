@@ -5,7 +5,16 @@ import path from "node:path";
 const dist = path.resolve(process.cwd(), "dist");
 
 test("no unverified markers in dist", () => {
-  const markers = ["Zz Uji Belum Terverifikasi", "ZZREJECTEDMARKER", "ZZNOTESMARKER"];
+  const markers = [
+    "Zz Uji Belum Terverifikasi",
+    "ZZREJECTEDMARKER",
+    "ZZNOTESMARKER",
+    "ZZBLUNDERREASON",
+    "ZZREJECTEDREPLY",
+    "ZZIDENTITYCHECK",
+    "ZZPROMISEUPDATENOTE",
+    "ZZINTERNALNOTE",
+  ];
   const files: string[] = [];
   function walk(dir: string) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {

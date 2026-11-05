@@ -45,8 +45,8 @@ migrate((app) => {
     cascadeDelete: false,
   }));
   parties.fields.add(selectField("verification_status", ["needs_verification", "verified", "rejected"], true));
-  parties.listRule = "verification_status = 'verified'";
-  parties.viewRule = "verification_status = 'verified'";
+  parties.listRule = "verification_status = 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
+  parties.viewRule = "verification_status = 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
   parties.createRule = MODERATOR_RULE;
   parties.updateRule = MODERATOR_RULE;
   parties.deleteRule = null;
@@ -62,8 +62,8 @@ migrate((app) => {
   people.fields.add(new DateField({ name: "verified_at" }));
   people.fields.add(new RelationField({ name: "verified_by", collectionId: app.findCollectionByNameOrId("users").id, maxSelect: 1 }));
   people.fields.add(hiddenText("notes"));
-  people.listRule = "verification_status = 'verified'";
-  people.viewRule = "verification_status = 'verified'";
+  people.listRule = "verification_status = 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
+  people.viewRule = "verification_status = 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
   people.createRule = MODERATOR_RULE;
   people.updateRule = MODERATOR_RULE;
   people.deleteRule = null;
@@ -131,8 +131,8 @@ migrate((app) => {
   positions.fields.add(new RelationField({ name: "verified_by", collectionId: app.findCollectionByNameOrId("users").id, maxSelect: 1, hidden: true }));
   positions.fields.add(hiddenText("rejection_reason"));
   positions.fields.add(hiddenText("notes"));
-  positions.listRule = "verification_status = 'verified'";
-  positions.viewRule = "verification_status = 'verified'";
+  positions.listRule = "verification_status = 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
+  positions.viewRule = "verification_status = 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
   positions.createRule = MODERATOR_RULE;
   positions.updateRule = MODERATOR_RULE;
   positions.deleteRule = null;
@@ -143,8 +143,8 @@ migrate((app) => {
   app.save(positions);
 
   const sourcesForRules = app.findCollectionByNameOrId("sources");
-  sourcesForRules.listRule = "positions_via_sources.verification_status ?= 'verified'";
-  sourcesForRules.viewRule = "positions_via_sources.verification_status ?= 'verified'";
+  sourcesForRules.listRule = "positions_via_sources.verification_status ?= 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
+  sourcesForRules.viewRule = "positions_via_sources.verification_status ?= 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
   app.save(sourcesForRules);
 
   const importBatches = new Collection({ type: "base", name: "import_batches" });
@@ -183,8 +183,8 @@ migrate((app) => {
   statusEvents.fields.add(new RelationField({ name: "sources", collectionId: sources.id, maxSelect: 100, required: true }));
   statusEvents.fields.add(new TextField({ name: "note" }));
   statusEvents.fields.add(selectField("verification_status", ["needs_verification", "verified", "rejected"], true));
-  statusEvents.listRule = "verification_status = 'verified'";
-  statusEvents.viewRule = "verification_status = 'verified'";
+  statusEvents.listRule = "verification_status = 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
+  statusEvents.viewRule = "verification_status = 'verified' || @request.auth.role = 'moderator' || @request.auth.role = 'admin'";
   statusEvents.createRule = MODERATOR_RULE;
   statusEvents.updateRule = MODERATOR_RULE;
   statusEvents.deleteRule = null;

@@ -51,9 +51,6 @@ jobs:
         working-directory: apps/web
         run: curl -fsS "${PB_PUBLIC_URL}/data/manifest.json" -o last-manifest.json || true
 
-      - name: Install OG font
-        run: sudo apt-get update && sudo apt-get install -y fonts-liberation
-
       - name: Build Astro site and Pagefind index
         working-directory: apps/web
         run: npm run build

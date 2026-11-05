@@ -33,9 +33,9 @@ export async function getStaticPaths() {
 export const GET: APIRoute = async ({ props }) => {
   const fontCandidates = [
     process.env.OG_FONT_PATH,
-    "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-    "/usr/share/fonts/liberation-sans-fonts/LiberationSans-Regular.ttf",
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "fonts/OpenSans-Regular.ttf",
+    "../fonts/OpenSans-Regular.ttf",
+    "/usr/share/fonts/open-sans/OpenSans-Regular.ttf",
   ].filter(Boolean) as string[];
   let font: Buffer | null = null;
   for (const candidate of fontCandidates) {

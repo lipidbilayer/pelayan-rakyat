@@ -27,17 +27,17 @@ if [ ! -f "$DATA_DIR/data.db" ]; then
   /pb/pocketbase superuser upsert "$PB_ADMIN_EMAIL" "$PB_ADMIN_PASSWORD" \
     --dir "$DATA_DIR" \
     --migrationsDir "$MIGRATIONS_DIR" \
-    --hooksDir "$HOOKS_DIR" \
     --automigrate=false \
     $ENCRYPTION_ARGS
 fi
 
 # shellcheck disable=SC2086
-exec /pb/pocketbase serve \
+PB_HOOKS_MODE=serve exec /pb/pocketbase serve \
   --http "$HTTP_ADDR" \
   --dir "$DATA_DIR" \
   --migrationsDir "$MIGRATIONS_DIR" \
   --hooksDir "$HOOKS_DIR" \
   --hooksWatch=false \
+  --hooksPool 1 \
   --automigrate=false \
   $ENCRYPTION_ARGS

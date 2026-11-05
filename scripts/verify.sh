@@ -4,10 +4,14 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-CONTAINER="pelayan-verify-pb"
+CONTAINER="pocketbase"
+CADDY="pelayan-verify-caddy"
 DATA_DIR="$(mktemp -d)"
-docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
-docker run -d --name "$CONTAINER" \
+NETWORK="pelayan-verify-net"
+docker rm -f "$CONTAINER" "$CADDY" >/dev/null 2>&1 || true
+docker network rm "$NETWORK" >/dev/null 2>&1 || true
+docker network create "$NETWORK" >/dev/null
+docker run -d --name "$CONTAINER" --network "$NETWORK" \
   -e PB_ADMIN_EMAIL=admin@example.com \
   -e PB_ADMIN_PASSWORD=verify-password \
   -v "$DATA_DIR:/pb_data:z" \
@@ -15,7 +19,8 @@ docker run -d --name "$CONTAINER" \
   pelayan-rakyat/pocketbase:local >/dev/null
 
 cleanup() {
-  docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
+  docker rm -f "$CONTAINER" "$CADDY" >/dev/null 2>&1 || true
+  docker network rm "$NETWORK" >/dev/null 2>&1 || true
   rm -rf "$DATA_DIR"
 }
 trap cleanup EXIT
@@ -50,11 +55,17 @@ def list_ids(coll, filter=""):
         if page >= d["totalPages"]: break
         page += 1
     return ids
-for coll in ["parties","people","positions"]:
+for coll in ["parties","people"]:
     for idv in list_ids(coll):
         body={"verification_status":"verified","verified_at":"2026-11-03T00:00:00.000Z"}
         r=urllib.request.Request(base+"/api/collections/"+coll+"/records/"+idv, data=json.dumps(body).encode(), headers={"Content-Type":"application/json","Authorization":"Bearer "+token}, method="PATCH")
         urllib.request.urlopen(r)
+# Leave a couple of positions unverified for the moderator test.
+position_ids=list_ids("positions")
+for idv in position_ids[2:]:
+    body={"verification_status":"verified","verified_at":"2026-11-03T00:00:00.000Z"}
+    r=urllib.request.Request(base+"/api/collections/positions/records/"+idv, data=json.dumps(body).encode(), headers={"Content-Type":"application/json","Authorization":"Bearer "+token}, method="PATCH")
+    urllib.request.urlopen(r)
 # Ensure name variants for search.
 people=list_ids("people","slug='surya-utama'")
 if people:
@@ -62,6 +73,12 @@ if people:
     urllib.request.urlopen(r)
     r=urllib.request.Request(base+"/api/collections/people/records/"+people[0], data=json.dumps({"verification_status":"verified","verified_at":"2026-11-03T00:00:00.000Z"}).encode(), headers={"Content-Type":"application/json","Authorization":"Bearer "+token}, method="PATCH")
     urllib.request.urlopen(r)
+
+# Create a moderator account for Playwright tests.
+try:
+    urllib.request.urlopen(urllib.request.Request(base+"/api/collections/users/records", data=json.dumps({"email":"verify-moderator@example.com","password":"verify-password","passwordConfirm":"verify-password","role":"moderator","name":"Verify Moderator"}).encode(), headers={"Content-Type":"application/json","Authorization":"Bearer "+token}))
+except Exception:
+    pass
 PY
 
 make build
@@ -69,7 +86,32 @@ make build
 PB_URL=http://127.0.0.1:8090 \
 PB_SUPERUSER_EMAIL=admin@example.com \
 PB_SUPERUSER_PASSWORD=verify-password \
+  node --test tests/phase1.test.mjs
+
+PB_URL=http://127.0.0.1:8090 \
+PB_SUPERUSER_EMAIL=admin@example.com \
+PB_SUPERUSER_PASSWORD=verify-password \
   node --test tests/phase3.test.mjs
 
 cd apps/web
+# Start Caddy for Playwright and Lighthouse.
+docker run -d --name "$CADDY" --network "$NETWORK" \
+  -e SITE_ADDRESS=http://:80 \
+  -e ADMIN_LISTEN_ADDRESS=http://127.0.0.1:8081 \
+  -v "$ROOT/infra/Caddyfile:/etc/caddy/Caddyfile:ro,z" \
+  -v "$ROOT/apps/web/dist:/srv/site:ro,z" \
+  -p 127.0.0.1:80:80 \
+  caddy:2.11.7-alpine >/dev/null
+sleep 5
+
 PB_PUBLIC_URL=http://127.0.0.1:8090 npx playwright test
+
+# Lighthouse via the same Caddy container
+for url in "" "dprd" "janji"; do
+  npx lighthouse "http://127.0.0.1/$url" --output=json --output-path="/tmp/pelayan-lh-$(echo $url | tr / -).json" --chrome-flags="--headless" --form-factor=mobile >/tmp/pelayan-lh.log 2>&1
+done
+docker rm -f "$CADDY" >/dev/null 2>&1 || true
+
+# Memory check
+docker stats --no-stream --format '{{.Name}} {{.MemUsage}}' pocketbase
+test "$(docker inspect -f '{{.State.OOMKilled}}' pocketbase)" = "false"

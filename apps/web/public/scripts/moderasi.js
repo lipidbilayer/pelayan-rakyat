@@ -135,6 +135,10 @@
     const jurisdictionSelect = el("select", { name: "jurisdiction" });
     const dapilSelect = el("select", { name: "dapil" });
     const partySelect = el("select", { name: "party" });
+
+    jurisdictionSelect.appendChild(el("option", { value: "" }, ["Semua yurisdiksi"]));
+    dapilSelect.appendChild(el("option", { value: "" }, ["Semua dapil"]));
+    partySelect.appendChild(el("option", { value: "" }, ["Semua partai"]));
     const weakOnly = el("input", { type: "checkbox", name: "weak" });
     const applyButton = el("button", { type: "button", class: "button" }, ["Terapkan filter"]);
 
@@ -185,7 +189,7 @@
       if (dapilSelect.value) filters.push("dapil.code='" + dapilSelect.value + "'");
       if (partySelect.value) filters.push("party.code='" + partySelect.value + "'");
       const filter = encodeURIComponent(filters.join(" && "));
-      const url = "/collections/positions/records?filter=" + filter + "&sort=-created&perPage=20&page=" + page + "&expand=person,institution,party,dapil,sources";
+      const url = "/collections/positions/records?filter=" + filter + "&sort=-id&perPage=20&page=" + page + "&expand=person,institution,party,dapil,sources";
       try {
         const data = await pb(url);
         let items = data.items || [];

@@ -7,7 +7,7 @@ ARG TARGETARCH
 
 RUN apk add --no-cache \
       ca-certificates=20261020-r0 \
-      tzdata=2026e-r0 \
+      tzdata=2026f-r0 \
       unzip=6.0-r16
 
 WORKDIR /pb
