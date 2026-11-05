@@ -1,7 +1,7 @@
 # Phase 2 report
 
 Date: 2026-11-05
-Commit: 2303e3cf05111ccb474dd90bcd39e217e07a4f87
+Commit: 91a3317a0845e4a322917fc85b1b9f72f84cd6a0
 CI run: local make verify (make-verify-20261105-215333.log)
 Result: ACCEPTED-READY (domain-dependent checks remain BLOCKED)
 
