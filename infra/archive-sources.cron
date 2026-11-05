@@ -1,0 +1,2 @@
+# Run on the dev server only, never on the 256 MB production server.
+*/30 * * * * cd /opt/pelayan-rakyat/tools/archive-sources && PB_URL=http://127.0.0.1:8090 PB_SUPERUSER_EMAIL=admin@example.com PB_SUPERUSER_PASSWORD=... /usr/bin/node src/index.js >> /var/log/pelayan-archive.log 2>&1

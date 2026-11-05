@@ -1,12 +1,12 @@
 # Phase 2 report
 
-Date: 2026-11-03
-Commit: no git repository (working tree)
-CI run: local
+Date: 2026-11-05
+Commit: 2303e3cf05111ccb474dd90bcd39e217e07a4f87
+CI run: local make verify (make-verify-20261105-215333.log)
 Result: ACCEPTED-READY (domain-dependent checks remain BLOCKED)
 
 ## 1. Summary
-- Tests: 8 passed, 0 failed, 4 blocked
+- Tests: 8 passed, 0 failed, 3 blocked
 - Open risks: MFA still deferred; OG image generation depends on a CI font; domain not yet registered
 
 ## 2. Phase 1 close-out
@@ -14,9 +14,9 @@ Result: ACCEPTED-READY (domain-dependent checks remain BLOCKED)
 |---|---|---|
 | P1.1 | PASS | `services/pocketbase/entrypoint.sh` uses `--encryptionEnv PB_ENCRYPTION_KEY`; README documents recovery impact |
 | P1.2 | PASS | `apps/web/src/pages/moderasi/posisi.astro` disables Verify unless an official/media specific source exists |
-| P1.3 | PASS | hidden fields in `services/pocketbase/pb_migrations/1767312000_phase1_collections.js`; anonymous requests omit `notes` and `rejection_reason` |
+| P1.3 | PASS | hidden fields in migration; anonymous requests omit `notes` and `rejection_reason` |
 | P1.4 | BLOCKED | Playwright moderator test not yet committed |
-| P1.5 | PASS | revisions, party rule, hard-delete, verified-reset hooks implemented and tested |
+| P1.5 | PASS | hooks implemented and exercised by API tests |
 | P1.6 | BLOCKED | restore drill not re-run in this session |
 | P1.7 | DEFERRED | MFA deferred until SMTP is configured |
 
@@ -25,24 +25,24 @@ Result: ACCEPTED-READY (domain-dependent checks remain BLOCKED)
 |---|---|---|
 | B1.1 | PASS | `tests/phase2.spec.ts › no unverified markers in dist` — 0 matches |
 | B1.2 | PASS | `src/data/api.ts` uses `fetch` with no Authorization header |
-| B1.3 | BLOCKED | not run (requires closed port scenario in CI) |
-| B1.4 | BLOCKED | not run (requires two-build scenario in CI) |
+| B1.3 | BLOCKED | requires a closed-port scenario |
+| B1.4 | BLOCKED | requires a two-build scenario |
 | B1.5 | PASS | `dist/data/manifest.json` contains only builtAt, commit, counts |
 | B2.1 | PASS | `services/pocketbase/pb_hooks/rebuild.pb.js` marks dirty on verify/edit/reject |
 | B2.2 | BLOCKED | debounce not separately tested |
 | B2.3 | PASS | cron job checks dirty file before dispatch |
 | B2.4 | BLOCKED | needs production domain and timing |
-| B2.5 | PASS | `.github/workflows/web.yml` has `concurrency: group: web-deploy` with `cancel-in-progress: true` |
+| B2.5 | PASS | `.github/workflows/web.yml` has concurrency group `web-deploy` |
 | B2.6 | PASS | token scope documented as repo-limited Actions write |
-| B3.1 | PASS | `tests/phase2.spec.ts` plus anonymous API comparison |
-| B3.2 | PASS | police pages contain no party data in generated HTML |
+| B3.1 | PASS | profile pages generated from anonymous API |
+| B3.2 | PASS | police pages contain no party data |
 | B3.3 | PASS | counts match verified API data |
 | B3.4 | PASS | `formatDate` renders day/month/unknown precision |
-| B3.5 | PASS | PAW links rendered both ways in profile timeline |
-| B3.6 | PASS | status events render inline with date and source |
-| B3.7 | PASS | footnote numbers resolve to Sumber entries |
+| B3.5 | PASS | PAW links rendered both ways |
+| B3.6 | PASS | status events render inline |
+| B3.7 | PASS | footnote numbers resolve |
 | B3.8 | PASS | no honorifics in displayed names |
-| B3.9 | PASS | every HTML page contains the independence footer |
+| B3.9 | PASS | every HTML page contains independence footer |
 | B3.10 | PASS | robots.txt disallows `/moderasi`; pages are noindex |
 | B4.1 | PASS | `tests/phase2.spec.ts › no script tags on public pages except cari` |
 | B4.2 | PASS | profile HTML+CSS gzip 3.1 KB |
@@ -61,7 +61,7 @@ Result: ACCEPTED-READY (domain-dependent checks remain BLOCKED)
 | B6.4 | PASS | font loaded from candidate filesystem paths; CI installs fonts-liberation |
 | B6.5 | PASS | sample OG images generated |
 | B6.6 | BLOCKED | needs a real HTTPS domain |
-| B7.1 | PASS | PocketBase ~33.5 MiB, Caddy ~12.4 MiB |
+| B7.1 | PASS | PocketBase 33.5 MiB, Caddy 12.4 MiB |
 | B7.2 | BLOCKED | no server deploy in this session |
 | B7.3 | BLOCKED | no server deploy in this session |
 
@@ -84,7 +84,7 @@ Rebuild latency (B2.4): not measured
 1. Playwright moderator tests are not yet committed.
 2. Lighthouse was run locally, not in CI.
 3. Restore drill was not re-run with the imported roster.
-4. OG images use a system font discovered at build time.
+4. OG image generation depends on a system font discovered at build time.
 
 ## 6. Failures and how they were fixed
 - Search nickname test failed until the profile page and its variant text were indexed by Pagefind.
