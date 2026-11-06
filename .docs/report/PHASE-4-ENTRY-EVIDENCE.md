@@ -2,7 +2,7 @@
 
 Date: 2026-11-06
 
-Evidence commit: `1085f7abcc0fbddd021fa4105e5e746858df2b9a`
+Evidence commit: `ee9312e1358d571caedb9c0573bc9540250071e8`
 
 Raw `make verify` log: `.docs/report/VERIFY-2026-11-06.log` (731 lines, exit 0)
 
@@ -16,7 +16,7 @@ This report covers only the five items requested before Phase 4: T3.1, T3.8, B1.
 | Phase 3 API/build tests | 42 passed, 0 failed | 695–698 |
 | Local build guards | 3 passed, 0 failed | 709–712 |
 | Playwright | 9 passed | 730 |
-| PocketBase memory | 60.28 MiB / 30.71 GiB | 731 |
+| PocketBase memory | 51.68 MiB / 30.71 GiB | 731 |
 
 `make verify` exited 0.
 
@@ -27,27 +27,27 @@ All tests are in `tests/phase3.test.mjs`. Each rule has at least one rejection a
 ### `insensitive` and `out_of_touch` require `blunder_reason`
 
 ```text
-665:✔ T3.1 hook insensitive: missing blunder_reason is rejected (1.66486ms)
-666:✔ T3.1 hook insensitive: blunder_reason is accepted (3.408571ms)
-667:✔ T3.1 hook out_of_touch: missing blunder_reason is rejected (1.57815ms)
-668:✔ T3.1 hook out_of_touch: blunder_reason is accepted (3.33982ms)
+665:✔ T3.1 hook insensitive: missing blunder_reason is rejected (1.290615ms)
+666:✔ T3.1 hook insensitive: blunder_reason is accepted (4.547229ms)
+667:✔ T3.1 hook out_of_touch: missing blunder_reason is rejected (1.750637ms)
+668:✔ T3.1 hook out_of_touch: blunder_reason is accepted (3.328674ms)
 ```
 
 ### `self_contradiction` requires a verified earlier record by the same person
 
 ```text
-669:✔ T3.1 hook self_contradiction: missing contradicts_record is rejected (1.855011ms)
-670:✔ T3.1 hook self_contradiction: an unverified contradicted record is rejected (6.014481ms)
-671:✔ T3.1 hook self_contradiction: a record from another person is rejected (11.307822ms)
-672:✔ T3.1 hook self_contradiction: same person, verified and earlier is accepted (12.120792ms)
+669:✔ T3.1 hook self_contradiction: missing contradicts_record is rejected (1.610337ms)
+670:✔ T3.1 hook self_contradiction: an unverified contradicted record is rejected (4.912361ms)
+671:✔ T3.1 hook self_contradiction: a record from another person is rejected (11.441748ms)
+672:✔ T3.1 hook self_contradiction: same person, verified and earlier is accepted (11.178317ms)
 ```
 
 ### Legal `suspect` and later states require an official source or two independent media sources
 
 ```text
-673:✔ T3.1 hook legal suspect: one media source is rejected (1.76211ms)
-674:✔ T3.1 hook legal suspect: two independent media sources are accepted (3.87495ms)
-675:✔ T3.1 hook legal suspect: an official source is accepted (4.27852ms)
+673:✔ T3.1 hook legal suspect: one media source is rejected (1.571286ms)
+674:✔ T3.1 hook legal suspect: two independent media sources are accepted (3.337254ms)
+675:✔ T3.1 hook legal suspect: an official source is accepted (3.754615ms)
 ```
 
 ### Promise status cannot be set directly on the promise record
@@ -55,16 +55,16 @@ All tests are in `tests/phase3.test.mjs`. Each rule has at least one rejection a
 The test asserts that `records` has neither a `status` nor a `promise_status` field, that a direct value on a promise create is rejected or ignored, and that `kept` only becomes valid through a `promise_updates` row with enough sources.
 
 ```text
-676:✔ T3.1 hook promise status: no direct status field exists on records (5.481311ms)
-677:✔ T3.1 hook promise status: kept with one media source is rejected (4.353721ms)
-678:✔ T3.1 hook promise status: kept with official and independent sources is accepted (7.235621ms)
+676:✔ T3.1 hook promise status: no direct status field exists on records (6.477607ms)
+677:✔ T3.1 hook promise status: kept with one media source is rejected (4.481809ms)
+678:✔ T3.1 hook promise status: kept with official and independent sources is accepted (7.12909ms)
 ```
 
 ### `privacy_confirmed` is required to verify
 
 ```text
-679:✔ T3.1 hook privacy_confirmed: verification without it is rejected (5.236111ms)
-680:✔ T3.1 hook privacy_confirmed: verification with it is accepted (7.721981ms)
+679:✔ T3.1 hook privacy_confirmed: verification without it is rejected (5.255922ms)
+680:✔ T3.1 hook privacy_confirmed: verification with it is accepted (6.854199ms)
 ```
 
 ## T3.8 — new data-leak test with fresh Phase 3 markers
@@ -83,7 +83,7 @@ The seed also exposed a real leak: the `replies` list/view rules only checked th
 
 ```text
   2:[T3.8] seeded 5 leak markers for http://127.0.0.1:8090
-681:✔ T3.8 built site leaks no hidden or unverified markers (73.501123ms)
+681:✔ T3.8 built site leaks no hidden or unverified markers (70.675337ms)
 ```
 
 ## B1.3 — closed API port fails the build and leaves the staging symlink unchanged
@@ -93,8 +93,8 @@ The seed also exposed a real leak: the `replies` list/view rules only checked th
 The sandbox has no deployed `/srv/site` and `/srv` is not writable by the test user, so the run records `/srv/site` as `missing` before and after and also applies the same readlink assertion to a real staging symlink proxy. On a host with a deployed `/srv/site`, the same assertion compares the actual symlink target.
 
 ```text
-703:[B1.3] exit=1 /srv/site missing -> missing (unchanged=true) staging-proxy /mnt/Data/Workspace/personal/pelayan-rakyat/apps/web/.pelayan-b13-KBKNew/previous-site -> /mnt/Data/Workspace/personal/pelayan-rakyat/apps/web/.pelayan-b13-KBKNew/previous-site (unchanged=true)
-704:✔ B1.3 closed-port build fails and leaves /srv/site unchanged (962.694491ms)
+703:[B1.3] exit=1 /srv/site missing -> missing (unchanged=true) staging-proxy /mnt/Data/Workspace/personal/pelayan-rakyat/apps/web/.pelayan-b13-M0W1LC/previous-site -> /mnt/Data/Workspace/personal/pelayan-rakyat/apps/web/.pelayan-b13-M0W1LC/previous-site (unchanged=true)
+704:✔ B1.3 closed-port build fails and leaves /srv/site unchanged (979.329985ms)
 ```
 
 ## B1.4 — 10 then 7 fixture people fails; `ALLOW_DROP=1` passes
@@ -107,7 +107,7 @@ The sandbox has no deployed `/srv/site` and `/srv` is not writable by the test u
 
 ```text
 705:[B1.4] 10-person build=0, 7-person build=1, 7-person ALLOW_DROP=0
-706:✔ B1.4 two-build drop guard: 10 then 7 people fails and ALLOW_DROP=1 passes (4842.857508ms)
+706:✔ B1.4 two-build drop guard: 10 then 7 people fails and ALLOW_DROP=1 passes (4579.687287ms)
 ```
 
 The manifest writer was added in `apps/web/astro.config.mjs` (`write-last-manifest`), so the guard now has a real previous-build count instead of relying on a hand-written file.
@@ -122,7 +122,7 @@ The manifest writer was added in `apps/web/astro.config.mjs` (`write-last-manife
 
 ```text
 707:[I.6] font removed: build=1 (OG font missing)
-708:✔ I.6 missing committed OFL font fails the build (1075.168589ms)
+708:✔ I.6 missing committed OFL font fails the build (1005.436376ms)
 ```
 
 ## Test harness note
