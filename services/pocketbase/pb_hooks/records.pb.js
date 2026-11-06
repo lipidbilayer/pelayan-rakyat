@@ -264,7 +264,10 @@ for (const collectionName of ["records"]) {
       }
     }
 
-    if (originalStatus === "verified" && newStatus === "verified") {
+    // The revisions hook may reset verification_status to needs_verification
+    // before or after this handler runs, so decide from the stored status and
+    // the requested update rather than from the possibly rewritten new status.
+    if (originalStatus === "verified" && newStatus !== "rejected") {
       if (!publicChangeNote.trim()) {
         throw new BadRequestError("public_change_note is required when editing a verified record");
       }
@@ -347,7 +350,7 @@ for (const collectionName of ["records"]) {
 
     // Create record_changes entries.
     try {
-      if (originalStatus === "verified" && newStatus === "verified" && hasChanged && publicChangeNote.trim()) {
+      if (originalStatus === "verified" && newStatus !== "rejected" && hasChanged && publicChangeNote.trim()) {
         const changes = app.findCollectionByNameOrId("record_changes");
         const change = new Record(changes);
         change.set("record", record.id);
