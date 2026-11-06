@@ -8,6 +8,7 @@ CONTAINER="pocketbase"
 CADDY="pelayan-verify-caddy"
 DATA_DIR="$(mktemp -d)"
 NETWORK="pelayan-verify-net"
+docker build -q -t pelayan-rakyat/pocketbase:local services/pocketbase >/dev/null
 docker rm -f "$CONTAINER" "$CADDY" >/dev/null 2>&1 || true
 docker network rm "$NETWORK" >/dev/null 2>&1 || true
 docker network create "$NETWORK" >/dev/null
@@ -40,10 +41,26 @@ done
 )
 # Verify one searchable person for the search test.
 python3 - "$ROOT" <<'PY'
-import json, urllib.request, sys
+import json, urllib.request, urllib.error, sys, time
 base="http://127.0.0.1:8090"
-req=urllib.request.Request(base+"/api/collections/_superusers/auth-with-password", data=json.dumps({"identity":"admin@example.com","password":"verify-password"}).encode(), headers={"Content-Type":"application/json"})
-token=json.load(urllib.request.urlopen(req))["token"]
+def auth():
+    for _ in range(10):
+        req=urllib.request.Request(base+"/api/collections/_superusers/auth-with-password", data=json.dumps({"identity":"admin@example.com","password":"verify-password"}).encode(), headers={"Content-Type":"application/json"})
+        try:
+            return json.load(urllib.request.urlopen(req))["token"]
+        except urllib.error.HTTPError as e:
+            if e.code != 429: raise
+            time.sleep(2)
+    raise SystemExit("auth failed: rate limited")
+token=auth()
+# The test suite creates many records in a burst; production rate limits would
+# turn valid assertions into 429s. The limits stay enabled in production.
+def settings(method, data=None):
+    req=urllib.request.Request(base+"/api/settings", data=None if data is None else json.dumps(data).encode(), headers={"Content-Type":"application/json","Authorization":"Bearer "+token}, method=method)
+    return json.load(urllib.request.urlopen(req))
+current=settings("GET")
+current["rateLimits"]["enabled"]=False
+settings("PATCH", current)
 def list_ids(coll, filter=""):
     ids=[]; page=1
     while True:
@@ -81,6 +98,13 @@ except Exception:
     pass
 PY
 
+# Seed the fresh T3.8 leak markers before the build so the build can leak them
+# if the collection rules or hidden fields are wrong.
+PB_URL=http://127.0.0.1:8090 \
+PB_SUPERUSER_EMAIL=admin@example.com \
+PB_SUPERUSER_PASSWORD=verify-password \
+  node tests/t38-seed.mjs
+
 make build
 
 PB_URL=http://127.0.0.1:8090 \
@@ -92,6 +116,9 @@ PB_URL=http://127.0.0.1:8090 \
 PB_SUPERUSER_EMAIL=admin@example.com \
 PB_SUPERUSER_PASSWORD=verify-password \
   node --test tests/phase3.test.mjs
+
+# Local build guards: closed API port, verified-people drop, missing OFL font.
+node --test tests/build-guards.test.mjs
 
 cd apps/web
 # Start Caddy for Playwright and Lighthouse.

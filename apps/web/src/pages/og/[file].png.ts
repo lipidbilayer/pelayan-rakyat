@@ -3,7 +3,24 @@ import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { loadSnapshot } from "../../data/api";
+
+// The OFL font is committed next to the site (apps/web/fonts). OG_FONT_PATH is
+// an explicit override for tests and packaging; there are deliberately no
+// system-font fallbacks, so a missing font fails the build.
+export function ogFontPath(): string {
+  return process.env.OG_FONT_PATH || join(process.cwd(), "fonts", "OpenSans-Regular.ttf");
+}
+
+export function loadOgFont(): Buffer {
+  const fontPath = ogFontPath();
+  try {
+    return readFileSync(fontPath);
+  } catch (error) {
+    throw new Error(`OG font missing: ${fontPath}`);
+  }
+}
 
 export async function getStaticPaths() {
   const snapshot = await loadSnapshot();
@@ -31,22 +48,7 @@ export async function getStaticPaths() {
 }
 
 export const GET: APIRoute = async ({ props }) => {
-  const fontCandidates = [
-    process.env.OG_FONT_PATH,
-    "fonts/OpenSans-Regular.ttf",
-    "../fonts/OpenSans-Regular.ttf",
-    "/usr/share/fonts/open-sans/OpenSans-Regular.ttf",
-  ].filter(Boolean) as string[];
-  let font: Buffer | null = null;
-  for (const candidate of fontCandidates) {
-    try {
-      font = readFileSync(candidate);
-      break;
-    } catch (e) {
-      // Try the next font location.
-    }
-  }
-  if (!font) throw new Error("No OG font found");
+  const font = loadOgFont();
   const { person, post, group } = props as any;
   const title = person ? person.full_name : group.title;
   const subtitle = person ? post : group.post;
@@ -64,7 +66,7 @@ export const GET: APIRoute = async ({ props }) => {
           padding: "64px",
           background: "#f7f5f0",
           color: "#1a1a1a",
-          fontFamily: "Liberation Sans",
+          fontFamily: "Open Sans",
         },
         children: [
           { type: "div", props: { style: { fontSize: 34, opacity: 0.7 }, children: "Pelayan Rakyat" } },
@@ -74,7 +76,7 @@ export const GET: APIRoute = async ({ props }) => {
         ],
       },
     },
-    { width: 1200, height: 630, fonts: [{ name: "Liberation Sans", data: font, weight: 400, style: "normal" }] },
+    { width: 1200, height: 630, fonts: [{ name: "Open Sans", data: font, weight: 400, style: "normal" }] },
   );
 
   const resvg = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } });

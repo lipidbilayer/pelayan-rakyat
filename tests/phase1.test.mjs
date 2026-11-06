@@ -19,22 +19,36 @@ async function api(path, options = {}, token = superToken) {
 }
 
 before(async () => {
-  const res = await api("/api/collections/_superusers/auth-with-password", {
-    method: "POST",
-    body: JSON.stringify({ identity: EMAIL, password: PASSWORD }),
-  });
-  superToken = res.data.token;
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const res = await api("/api/collections/_superusers/auth-with-password", {
+      method: "POST",
+      body: JSON.stringify({ identity: EMAIL, password: PASSWORD }),
+    });
+    if (res.ok) {
+      superToken = res.data.token;
+      break;
+    }
+    if (res.status !== 429) throw new Error("superuser auth failed: " + res.status);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
   try {
     await api("/api/collections/users/records", {
       method: "POST",
       body: JSON.stringify({ email: "phase1-moderator@example.com", password: "verify-password", passwordConfirm: "verify-password", role: "moderator", name: "Phase 1 Moderator" }),
     }, superToken);
   } catch (e) {}
-  const login = await api("/api/collections/users/auth-with-password", {
-    method: "POST",
-    body: JSON.stringify({ identity: "phase1-moderator@example.com", password: "verify-password" }),
-  }, "");
-  moderatorToken = login.data.token;
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const login = await api("/api/collections/users/auth-with-password", {
+      method: "POST",
+      body: JSON.stringify({ identity: "phase1-moderator@example.com", password: "verify-password" }),
+    }, "");
+    if (login.ok) {
+      moderatorToken = login.data.token;
+      break;
+    }
+    if (login.status !== 429) throw new Error("moderator auth failed: " + login.status);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
 });
 
 test("P1.2 verify rule: Wikipedia-only position is rejected", async () => {

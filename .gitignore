@@ -31,6 +31,8 @@ pagefind/
 # Local test artefacts
 backups/
 *.zip
+.pelayan-*
+last-manifest.json
 
 # Draft research data must not be committed
 data/drafts/
