@@ -1,0 +1,24 @@
+# Link shorteners and redirect wrappers rejected by the submission hook.
+# One hostname per line. Subdomains of a listed host are blocked too.
+bit.ly
+bitly.com
+s.id
+t.co
+tinyurl.com
+tiny.cc
+goo.gl
+is.gd
+v.gd
+ow.ly
+buff.ly
+rebrand.ly
+cutt.ly
+shorturl.at
+trib.al
+lnkd.in
+wa.me
+api.whatsapp.com
+chat.whatsapp.com
+facebook.com/l.php
+l.facebook.com
+lm.facebook.com

@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Kiriman kontributor" description="Antrian laporan kontributor." noindex>
+  <section class="hero">
+    <p class="eyebrow">Moderasi</p>
+    <h1>Kiriman kontributor</h1>
+  </section>
+
+  <div id="moderasi-root" data-page="kiriman"></div>
+
+  <script is:inline src="/scripts/moderasi.js" defer></script>
+  <script is:inline src="/scripts/moderasi-kiriman.js" defer></script>
+</BaseLayout>

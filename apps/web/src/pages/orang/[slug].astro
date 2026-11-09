@@ -207,8 +207,9 @@ const description = currentPositions.length
   <section aria-labelledby="bagikan">
     <h2 id="bagikan" class="visually-hidden">Bagikan</h2>
     <div class="actions">
+      <a class="button button--quiet" href={`/kirim?orang=${person.slug}`}>Kirim info</a>
+      <a class="button button--quiet" href={`/kirim?kind=correction&orang=${person.slug}`}>Usulkan koreksi</a>
       <a class="button button--quiet" href={`https://wa.me/?text=${encodeURIComponent(person.full_name + " — " + Astro.site)}`}>Bagikan ke WhatsApp</a>
-      <a class="button button--quiet" href={`/koreksi?orang=${person.slug}`}>Laporkan kesalahan</a>
     </div>
     <p class="note">Terakhir diperbarui {formatDate(person.updated || person.created, "day")}.</p>
   </section>

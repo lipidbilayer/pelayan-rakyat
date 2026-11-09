@@ -4,6 +4,7 @@
 const TRACKED_COLLECTIONS = [
   "parties", "people", "institutions", "dapil", "sources", "positions",
   "status_events", "topics", "records", "promise_updates", "replies",
+  "submissions", "flags",
 ];
 
 for (const collectionName of TRACKED_COLLECTIONS) {

@@ -14,6 +14,11 @@ test("no unverified markers in dist", () => {
     "ZZIDENTITYCHECK",
     "ZZPROMISEUPDATENOTE",
     "ZZINTERNALNOTE",
+    "T38LEAKUNVERIFIEDBLUNDER7f41c",
+    "T38LEAKREJECTEDREPLYTEXT7f41c",
+    "T38LEAKIDENTITYCHECK7f41c",
+    "T38LEAKUNVERIFIEDPROMISENOTE7f41c",
+    "T38LEAKRECORDINTERNALNOTES7f41c",
   ];
   const files: string[] = [];
   function walk(dir: string) {
@@ -32,12 +37,26 @@ test("no unverified markers in dist", () => {
   }
 });
 
-test("no script tags on public pages except cari", async ({ page }) => {
-  const htmlFiles = ["/", "/dprd", "/polisi", "/pemprov", "/pusat"];
-  for (const url of htmlFiles) {
-    await page.goto(url);
-    const scripts = await page.locator("script").count();
-    expect(scripts, `${url} has script`).toBe(0);
+test("script tags only on allowed pages", () => {
+  const allowed = new Set(["/cari", "/masuk", "/akun", "/kirim", "/lapor"]);
+  const files: string[] = [];
+  function walk(dir: string) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith(".html")) files.push(full);
+    }
+  }
+  walk(dist);
+  for (const file of files) {
+    const content = fs.readFileSync(file, "utf8");
+    if (!content.includes("<script")) continue;
+    const rel = path.relative(dist, file).replace(/\\/g, "/");
+    let route = "/" + rel.replace(/index\.html$/, "").replace(/\.html$/, "");
+    if (route === "/") route = "/";
+    if (route.endsWith("/")) route = route.slice(0, -1) || "/";
+    const isAllowed = allowed.has(route) || route.startsWith("/moderasi");
+    expect(isAllowed, `${route} (${file}) contains a script tag`).toBe(true);
   }
 });
 

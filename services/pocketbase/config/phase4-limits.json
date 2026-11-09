@@ -1,0 +1,25 @@
+{
+  "termsVersion": "2026-11-06",
+  "newAccountHours": 24,
+  "submissionsPerDay": {
+    "newAccount": 3,
+    "trust0": 10,
+    "trust1": 30
+  },
+  "flagsPerDay": {
+    "newAccount": 10,
+    "trust0": 30,
+    "trust1": 60
+  },
+  "trust": {
+    "convertedVerified": 5
+  },
+  "retention": {
+    "rejectedMonths": 12
+  },
+  "alerts": {
+    "flagsPerRecordPerHour": 5,
+    "submissionsPerPersonPerHour": 10,
+    "newAccountsPerTarget24h": 5
+  }
+}

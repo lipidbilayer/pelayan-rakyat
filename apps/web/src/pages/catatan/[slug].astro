@@ -140,8 +140,13 @@ const title = record.title;
     </section>
   )}
 
+  {record.from_citizen_report && (
+    <p class="note">Berawal dari laporan warga.</p>
+  )}
+
   <div class="actions">
+    <a class="button button--quiet" href={`/kirim?kind=correction&catatan=${record.slug}`}>Usulkan koreksi</a>
+    <a class="button button--quiet" href={`/lapor?catatan=${record.slug}`}>Laporkan masalah</a>
     <a class="button button--quiet" href={`https://wa.me/?text=${encodeURIComponent(record.title + " — " + Astro.site)}`}>Bagikan ke WhatsApp</a>
-    <a class="button button--quiet" href={`/koreksi?catatan=${record.slug}`}>Laporkan kesalahan</a>
   </div>
 </BaseLayout>

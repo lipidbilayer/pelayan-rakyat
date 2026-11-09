@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Laporkan masalah" description="Laporkan masalah pada sebuah catatan." noindex>
+  <section class="hero">
+    <p class="eyebrow">Kontributor</p>
+    <h1>Laporkan masalah</h1>
+    <p class="lede">Laporan tidak menurunkan catatan. Moderator yang memutuskan.</p>
+  </section>
+
+  <div id="kontribusi-root" data-page="lapor"></div>
+
+  <script is:inline src="/scripts/kontribusi.js" defer></script>
+</BaseLayout>

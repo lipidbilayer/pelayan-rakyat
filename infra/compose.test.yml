@@ -1,0 +1,26 @@
+# Test-only PocketBase configuration for `make verify`.
+#
+# This is the ONLY place that disables the production rate limits and uses a
+# fixed ALTCHA key. Production starts the same image without these variables,
+# so the committed prod migration (1767700001_phase4_rate_limits.js) applies.
+services:
+  pocketbase:
+    container_name: pocketbase
+    image: pelayan-rakyat/pocketbase:local
+    environment:
+      PB_ADMIN_EMAIL: admin@example.com
+      PB_ADMIN_PASSWORD: verify-password
+      PB_ALTCHA_HMAC_KEY: verify-altcha-key
+      PB_TEST_MODE: "1"
+      PB_TEST_DISABLE_RATE_LIMITS: "true"
+      SITE_URL: http://localhost
+    ports:
+      - "127.0.0.1:8090:8090"
+    volumes:
+      - "${PB_TEST_DATA_DIR:?PB_TEST_DATA_DIR is required}:/pb_data:z"
+    networks:
+      - pelayan-verify-net
+
+networks:
+  pelayan-verify-net:
+    external: true

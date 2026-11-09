@@ -12,14 +12,13 @@ docker build -q -t pelayan-rakyat/pocketbase:local services/pocketbase >/dev/nul
 docker rm -f "$CONTAINER" "$CADDY" >/dev/null 2>&1 || true
 docker network rm "$NETWORK" >/dev/null 2>&1 || true
 docker network create "$NETWORK" >/dev/null
-docker run -d --name "$CONTAINER" --network "$NETWORK" \
-  -e PB_ADMIN_EMAIL=admin@example.com \
-  -e PB_ADMIN_PASSWORD=verify-password \
-  -v "$DATA_DIR:/pb_data:z" \
-  -p 127.0.0.1:8090:8090 \
-  pelayan-rakyat/pocketbase:local >/dev/null
+
+# Test-only settings (rate limits off, fixed ALTCHA key) live in this compose
+# file and nowhere else. Production runs the committed migrations with limits on.
+PB_TEST_DATA_DIR="$DATA_DIR" docker compose -f infra/compose.test.yml up -d >/dev/null
 
 cleanup() {
+  PB_TEST_DATA_DIR="$DATA_DIR" docker compose -f infra/compose.test.yml down -v >/dev/null 2>&1 || true
   docker rm -f "$CONTAINER" "$CADDY" >/dev/null 2>&1 || true
   docker network rm "$NETWORK" >/dev/null 2>&1 || true
   rm -rf "$DATA_DIR"
@@ -53,14 +52,8 @@ def auth():
             time.sleep(2)
     raise SystemExit("auth failed: rate limited")
 token=auth()
-# The test suite creates many records in a burst; production rate limits would
-# turn valid assertions into 429s. The limits stay enabled in production.
-def settings(method, data=None):
-    req=urllib.request.Request(base+"/api/settings", data=None if data is None else json.dumps(data).encode(), headers={"Content-Type":"application/json","Authorization":"Bearer "+token}, method=method)
-    return json.load(urllib.request.urlopen(req))
-current=settings("GET")
-current["rateLimits"]["enabled"]=False
-settings("PATCH", current)
+# Rate limits are disabled by infra/compose.test.yml only; this script must
+# never change production settings.
 def list_ids(coll, filter=""):
     ids=[]; page=1
     while True:
@@ -105,6 +98,11 @@ PB_SUPERUSER_EMAIL=admin@example.com \
 PB_SUPERUSER_PASSWORD=verify-password \
   node tests/t38-seed.mjs
 
+PB_URL=http://127.0.0.1:8090 \
+PB_SUPERUSER_EMAIL=admin@example.com \
+PB_SUPERUSER_PASSWORD=verify-password \
+  node tests/t416-seed.mjs
+
 make build
 
 PB_URL=http://127.0.0.1:8090 \
@@ -116,6 +114,11 @@ PB_URL=http://127.0.0.1:8090 \
 PB_SUPERUSER_EMAIL=admin@example.com \
 PB_SUPERUSER_PASSWORD=verify-password \
   node --test tests/phase3.test.mjs
+
+PB_URL=http://127.0.0.1:8090 \
+PB_SUPERUSER_EMAIL=admin@example.com \
+PB_SUPERUSER_PASSWORD=verify-password \
+  node --test tests/phase4.test.mjs
 
 # Local build guards: closed API port, verified-people drop, missing OFL font.
 node --test tests/build-guards.test.mjs
@@ -134,7 +137,7 @@ sleep 5
 PB_PUBLIC_URL=http://127.0.0.1:8090 npx playwright test
 
 # Lighthouse via the same Caddy container
-for url in "" "dprd" "janji"; do
+for url in "" "dprd" "janji" "kirim" "akun"; do
   npx lighthouse "http://127.0.0.1/$url" --output=json --output-path="/tmp/pelayan-lh-$(echo $url | tr / -).json" --chrome-flags="--headless" --form-factor=mobile >/tmp/pelayan-lh.log 2>&1
 done
 docker rm -f "$CADDY" >/dev/null 2>&1 || true

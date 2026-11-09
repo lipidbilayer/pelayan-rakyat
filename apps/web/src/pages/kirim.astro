@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Kirim info" description="Kirim tautan sumber publik tentang seorang pejabat." noindex>
+  <section class="hero">
+    <p class="eyebrow">Kontributor</p>
+    <h1>Kirim info</h1>
+    <p class="lede">Hanya sumber publik. Tidak ada kehidupan pribadi. Semua laporan diperiksa moderator sebelum apa pun diterbitkan.</p>
+  </section>
+
+  <div id="kontribusi-root" data-page="kirim"></div>
+
+  <script is:inline src="/scripts/kontribusi.js" defer></script>
+</BaseLayout>
