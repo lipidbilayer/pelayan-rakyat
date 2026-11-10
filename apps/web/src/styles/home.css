@@ -51,24 +51,12 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 .pr-prov-on{cursor:pointer}
 .pr-java-hit{position:absolute;inset:0;width:100%;height:100%;display:block;background:transparent;cursor:pointer;z-index:1}
 .pr-city-layer{position:absolute;z-index:3;pointer-events:none}
-#st-provinsi-banten:checked ~ .pr-map-row .pr-city-layer,
-#st-kota-banten:checked ~ .pr-map-row .pr-city-layer,
-#st-provinsi-jawabarat:checked ~ .pr-map-row .pr-city-layer,
-#st-kota-jawabarat:checked ~ .pr-map-row .pr-city-layer{display:none}
 .pr-city{background:color-mix(in srgb,var(--accent) var(--t),var(--card));cursor:pointer}
 /* Pale DKI base closes seams between the kota shapes; the grey underlay closes
    the gap to Banten/Jawa Barat while leaving the bay above the coast as sea. */
 .pr-city-base{position:absolute;inset:0;pointer-events:none;background:color-mix(in srgb,var(--accent) 35%,var(--card))}
 .pr-city-underlay{position:absolute;left:0;top:8.2%;width:100%;height:91.8%;background:var(--land);pointer-events:none}
 .pr-dki-hit{position:absolute;z-index:2;display:block;background:transparent;pointer-events:none}
-.pr-banten-hit{position:absolute;z-index:2;display:block;background:transparent;pointer-events:none}
-.pr-banten-city-layer{position:absolute;z-index:3;pointer-events:none;display:none}
-#st-provinsi-banten:checked ~ .pr-map-row .pr-banten-city-layer,
-#st-kota-banten:checked ~ .pr-map-row .pr-banten-city-layer{display:block}
-.pr-jawabarat-hit{position:absolute;z-index:2;display:block;background:transparent;pointer-events:none}
-.pr-jawabarat-city-layer{position:absolute;z-index:3;pointer-events:none;display:none}
-#st-provinsi-jawabarat:checked ~ .pr-map-row .pr-jawabarat-city-layer,
-#st-kota-jawabarat:checked ~ .pr-map-row .pr-jawabarat-city-layer{display:block}
 
 #st-nasional:checked ~ .pr-map-row .pr-world{transform:translate(0,0) scale(1)}
 #st-pulau:checked ~ .pr-map-row .pr-world{transform:translate(-115.1%,-325%) scale(5)}
@@ -79,15 +67,9 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 #st-kota-pusat:checked ~ .pr-map-row .pr-world,
 #st-kota-timur:checked ~ .pr-map-row .pr-world,
 #st-kota-selatan:checked ~ .pr-map-row .pr-world{transform:translate(-1118.37%,-2929.55%) scale(42.699)}
-#st-provinsi-banten:checked ~ .pr-map-row .pr-world,
-#st-kota-banten:checked ~ .pr-map-row .pr-world{transform:translate(-307.69%,-956.68%) scale(14.003)}
-#st-provinsi-jawabarat:checked ~ .pr-map-row .pr-world,
-#st-kota-jawabarat:checked ~ .pr-map-row .pr-world{transform:translate(-293.88%,-801.86%) scale(11.655)}
 
 #st-pulau:checked ~ .pr-map-row .pr-prov-on{pointer-events:auto}
 #st-pulau:checked ~ .pr-map-row .pr-dki-hit{pointer-events:auto;cursor:pointer}
-#st-pulau:checked ~ .pr-map-row .pr-banten-hit{pointer-events:auto;cursor:pointer}
-#st-pulau:checked ~ .pr-map-row .pr-jawabarat-hit{pointer-events:auto;cursor:pointer}
 #st-pulau:checked ~ .pr-map-row .pr-java-hit,
 #st-provinsi:checked ~ .pr-map-row .pr-java-hit,
 #st-kota-seribu:checked ~ .pr-map-row .pr-java-hit,
@@ -96,15 +78,7 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 #st-kota-pusat:checked ~ .pr-map-row .pr-java-hit,
 #st-kota-timur:checked ~ .pr-map-row .pr-java-hit,
 #st-kota-selatan:checked ~ .pr-map-row .pr-java-hit{pointer-events:none}
-#st-provinsi-banten:checked ~ .pr-map-row .pr-java-hit,
-#st-kota-banten:checked ~ .pr-map-row .pr-java-hit,
-#st-provinsi-jawabarat:checked ~ .pr-map-row .pr-java-hit,
-#st-kota-jawabarat:checked ~ .pr-map-row .pr-java-hit{pointer-events:none}
 #st-provinsi:checked ~ .pr-map-row .pr-city-layer,
-#st-provinsi-banten:checked ~ .pr-map-row .pr-banten-city-layer,
-#st-kota-banten:checked ~ .pr-map-row .pr-banten-city-layer,
-#st-provinsi-jawabarat:checked ~ .pr-map-row .pr-jawabarat-city-layer,
-#st-kota-jawabarat:checked ~ .pr-map-row .pr-jawabarat-city-layer,
 #st-kota-seribu:checked ~ .pr-map-row .pr-city-layer,
 #st-kota-utara:checked ~ .pr-map-row .pr-city-layer,
 #st-kota-barat:checked ~ .pr-map-row .pr-city-layer,
@@ -146,10 +120,6 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 #st-nasional:checked ~ .pr-map-row .panel-nasional{display:flex}
 #st-pulau:checked ~ .pr-map-row .panel-pulau{display:flex}
 #st-provinsi:checked ~ .pr-map-row .panel-provinsi{display:flex}
-#st-provinsi-banten:checked ~ .pr-map-row .panel-provinsi-banten{display:flex}
-#st-kota-banten:checked ~ .pr-map-row .panel-kota-banten{display:flex}
-#st-provinsi-jawabarat:checked ~ .pr-map-row .panel-provinsi-jawabarat{display:flex}
-#st-kota-jawabarat:checked ~ .pr-map-row .panel-kota-jawabarat{display:flex}
 #st-kota-seribu:checked ~ .pr-map-row .panel-kota-seribu{display:flex}
 #st-kota-utara:checked ~ .pr-map-row .panel-kota-utara{display:flex}
 #st-kota-barat:checked ~ .pr-map-row .panel-kota-barat{display:flex}
@@ -161,10 +131,6 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 #st-nasional:checked ~ .crumbs-nasional{display:flex}
 #st-pulau:checked ~ .crumbs-pulau{display:flex}
 #st-provinsi:checked ~ .crumbs-provinsi{display:flex}
-#st-provinsi-banten:checked ~ .crumbs-provinsi-banten{display:flex}
-#st-kota-banten:checked ~ .crumbs-kota-banten{display:flex}
-#st-provinsi-jawabarat:checked ~ .crumbs-provinsi-jawabarat{display:flex}
-#st-kota-jawabarat:checked ~ .crumbs-kota-jawabarat{display:flex}
 #st-kota-seribu:checked ~ .crumbs-kota-seribu{display:flex}
 #st-kota-utara:checked ~ .crumbs-kota-utara{display:flex}
 #st-kota-barat:checked ~ .crumbs-kota-barat{display:flex}
