@@ -43,7 +43,7 @@ const project = (value: number, cam: { scale: number; tx: number; ty: number }, 
   value * cam.scale + (axis === "x" ? cam.tx : cam.ty);
 
 const pulauRegions = [
-  { label: "Banten", target: "st-pulau", fill: "var(--land)", ink: "var(--title)", lx: "15.56%", ly: "32.34%", clip: "polygon(5.71% 38.10%,14.29% 16.67%,19.52% 19.01%,19.52% 29.76%,17.14% 38.10%,17.14% 52.38%)" },
+  { label: "Banten", target: "st-provinsi-banten", fill: "var(--land)", ink: "var(--title)", lx: "12.62%", ly: "34.53%", clip: "polygon(13.45% 18.65%,12.89% 22.72%,12.15% 24.36%,11.33% 37.01%,10.75% 37.74%,10.46% 36.09%,10.23% 36.25%,9.91% 40.67%,9.06% 43.46%,8.75% 46.31%,8.09% 43.81%,7.93% 41.05%,7.06% 44.37%,6.61% 44.44%,6.87% 46.66%,7.57% 45.59%,8.29% 47.06%,8.49% 46.55%,9.31% 47.66%,10.22% 46.62%,12.18% 46.83%,12.44% 45.98%,13.37% 45.99%,15.33% 50.62%,16.24% 51.17%,16.69% 46.08%,17.43% 44.57%,16.94% 44.08%,16.64% 42.08%,16.41% 35.42%,16.85% 34.66%,16.61% 32.42%,16.97% 31.08%,17.14% 32.58%,17.46% 32.34%,17.35% 31.69%,17.99% 32.80%,19.44% 32.76%,19.24% 28.97%,18.77% 27.28%,18.99% 23.57%,18.38% 22.36%,17.86% 23.19%,17.51% 22.57%,17.06% 23.62%,16.49% 23.01%,16.03% 21.13%,15.78% 21.86%,15.28% 20.93%,14.49% 23.38%,13.91% 21.73%,13.94% 19.71%)" },
   { label: "DKI Jakarta", target: "st-provinsi", fill: "var(--accent)", ink: "var(--title)", lx: "21.33%", ly: "15.40%", clip: "polygon(19.81% 19.52%,22.86% 20.95%,22.86% 28.57%,19.81% 28.57%)" },
   { label: "Jawa Barat", target: "st-pulau", fill: "var(--land)", ink: "var(--title)", lx: "27.57%", ly: "42.81%", clip: "polygon(23.91% 19.00%,35.24% 26.19%,40.95% 38.10%,40.00% 61.90%,32.38% 61.90%,17.14% 52.38%,17.14% 38.10%,19.52% 29.76%,23.91% 29.76%)" },
   { label: "Jawa Tengah", target: "st-pulau", fill: "var(--land)", ink: "var(--title)", lx: "54.33%", ly: "49.98%", clip: "polygon(40.95% 38.10%,51.43% 40.48%,59.05% 28.57%,66.67% 35.71%,62.86% 72.62%,59.52% 71.43%,59.05% 59.52%,52.38% 57.14%,51.43% 64.29%,40.00% 61.90%)" },
@@ -54,6 +54,17 @@ const pulauRegions = [
 // Kota admins use simplified ADM2 outlines (geoBoundaries, ODbL) so they tile
 // the real DKI silhouette instead of a rectangle. Coordinates are slot-local:
 // x 0-100, y 8.2-100 (the sea margin above the coast is reserved for Seribu).
+const BANTEN_BASE = "polygon(56.03% 5.55%,51.99% 16.94%,46.60% 21.53%,40.71% 56.96%,36.47% 58.99%,34.38% 54.39%,32.74% 54.83%,30.42% 67.20%,24.23% 75.03%,21.98% 82.99%,17.25% 75.99%,16.11% 68.26%,9.74% 77.57%,6.54% 77.77%,8.41% 83.97%,13.47% 80.99%,18.68% 85.11%,20.12% 83.68%,26.06% 86.77%,32.69% 83.86%,46.88% 84.47%,48.73% 82.07%,55.49% 82.10%,69.65% 95.06%,76.23% 96.62%,79.53% 82.35%,84.90% 78.13%,81.35% 76.75%,79.13% 71.15%,77.45% 52.50%,80.64% 50.39%,78.91% 44.10%,81.51% 40.36%,82.74% 44.54%,85.10% 43.89%,84.26% 42.05%,88.92% 45.18%,99.39% 45.06%,97.95% 34.44%,94.54% 29.70%,96.16% 19.31%,91.74% 15.92%,87.97% 18.25%,85.43% 16.52%,82.22% 19.47%,78.08% 17.76%,74.75% 12.49%,72.92% 14.52%,69.28% 11.94%,63.59% 18.78%,59.40% 14.18%,59.58% 8.52%)";
+const bantenCityRegions = [
+  { label: "Kota Cilegon", slug: "cilegon", t: 34, lx: "55.10%", ly: "15.40%", clip: "polygon(56.04% 5.64%,48.94% 19.23%,55.36% 18.97%,55.75% 22.24%,58.81% 15.87%,55.55% 10.33%)" },
+  { label: "Kota Serang", slug: "serang-kota", t: 40, lx: "63.20%", ly: "25.40%", clip: "polygon(64.95% 16.90%,62.41% 17.28%,62.36% 21.19%,57.70% 26.32%,57.57% 30.05%,62.47% 29.44%,61.64% 32.23%,63.65% 33.55%,68.77% 27.70%,66.53% 26.17%,66.98% 18.47%)" },
+  { label: "Kota Tangerang", slug: "tangerang-kota", t: 44, lx: "93.60%", ly: "30.70%", clip: "polygon(94.48% 23.57%,91.42% 24.27%,86.43% 31.52%,94.85% 34.32%,95.48% 36.51%,98.13% 35.24%,94.57% 29.67%)" },
+  { label: "Kota Tangerang Selatan", slug: "tangerang-selatan", t: 48, lx: "95.50%", ly: "40.00%", clip: "polygon(92.01% 34.29%,92.33% 45.13%,99.47% 44.72%,98.32% 36.00%)" },
+  { label: "Lebak", slug: "lebak", t: 50, lx: "68.00%", ly: "68.20%", clip: "polygon(64.55% 39.04%,61.32% 42.34%,60.29% 49.76%,55.12% 50.80%,45.81% 81.61%,46.59% 84.46%,49.04% 81.96%,55.53% 82.47%,69.41% 94.90%,74.70% 96.96%,77.23% 95.29%,79.53% 82.35%,84.85% 78.20%,81.35% 76.75%,79.13% 71.15%,77.45% 52.50%,80.59% 49.33%,77.13% 42.47%,72.52% 42.94%)" },
+  { label: "Pandeglang", slug: "pandeglang", t: 42, lx: "5.10%", ly: "64.00%", clip: "polygon(9.60% 58.05%,5.10% 59.41%,0.04% 65.49%,1.70% 66.40%,4.89% 63.12%,4.92% 71.00%,9.56% 64.57%)" },
+  { label: "Serang", slug: "serang", t: 38, lx: "61.70%", ly: "26.60%", clip: "polygon(56.04% 5.64%,58.48% 18.69%,55.75% 22.24%,55.36% 18.97%,52.65% 18.69%,46.62% 21.44%,43.21% 35.38%,46.73% 33.71%,49.36% 38.39%,50.42% 34.98%,56.03% 38.08%,59.59% 34.51%,63.98% 36.11%,63.74% 39.26%,66.81% 41.03%,77.47% 42.66%,75.39% 33.14%,76.94% 28.01%,73.78% 20.81%,78.09% 17.62%,76.73% 13.81%,68.08% 13.00%,66.53% 26.17%,68.74% 28.00%,63.65% 33.55%,61.64% 32.23%,62.47% 29.44%,57.50% 29.90%,62.41% 17.28%,59.42% 14.20%,59.57% 8.45%)" },
+  { label: "Tangerang", slug: "tangerang", t: 46, lx: "85.30%", ly: "30.30%", clip: "polygon(91.85% 15.78%,88.50% 18.27%,85.43% 16.52%,82.72% 19.41%,76.67% 17.94%,73.78% 20.81%,76.94% 28.01%,75.39% 33.14%,78.61% 44.07%,81.50% 40.35%,81.92% 44.21%,84.47% 44.56%,84.93% 42.07%,88.92% 45.17%,92.67% 44.91%,91.64% 34.46%,86.41% 31.04%,91.42% 24.27%,96.71% 22.92%,95.79% 18.60%)" },
+];
 const cityRegions = [
   { label: "Kepulauan Seribu", slug: "seribu", t: 30, lx: "33.00%", ly: "4.50%", clip: "polygon(29.50% 5.00%,33.00% 2.50%,36.50% 4.50%,35.50% 7.50%,31.00% 7.00%)" },
   { label: "Jakarta Utara", slug: "utara", t: 40, lx: "52.00%", ly: "26.60%", clip: "polygon(13.53% 8.30%,8.93% 10.49%,22.62% 22.94%,31.02% 26.44%,39.84% 25.36%,40.06% 22.69%,44.88% 21.59%,45.47% 23.80%,50.30% 23.23%,52.53% 26.72%,54.94% 26.36%,54.77% 29.16%,60.87% 28.27%,77.84% 38.49%,82.13% 38.70%,81.94% 31.98%,88.21% 28.44%,89.74% 32.19%,99.28% 29.48%,98.19% 9.29%,81.16% 13.21%,77.56% 11.46%,76.75% 14.62%,76.23% 11.02%,71.78% 10.95%,71.69% 14.02%,70.30% 10.92%,69.73% 13.91%,68.95% 10.55%,68.18% 13.87%,68.00% 9.71%,66.89% 15.01%,66.25% 12.30%,62.61% 18.23%,64.92% 13.22%,53.78% 19.52%,45.63% 16.63%,43.76% 19.14%,40.92% 10.03%,38.38% 14.88%,38.67% 10.22%,36.64% 9.69%,34.51% 15.41%,27.57% 11.62%,17.39% 11.73%)" },
@@ -204,6 +215,8 @@ const pulauIslands = [
           <input class="pr-map-state" type="radio" name="pr-map" id="st-nasional" checked />
           <input class="pr-map-state" type="radio" name="pr-map" id="st-pulau" />
           <input class="pr-map-state" type="radio" name="pr-map" id="st-provinsi" />
+          <input class="pr-map-state" type="radio" name="pr-map" id="st-provinsi-banten" />
+          <input class="pr-map-state" type="radio" name="pr-map" id="st-kota-banten" />
           {cityRegions.map((city) => (
             <input class="pr-map-state" type="radio" name="pr-map" id={`st-kota-${city.slug}`} />
           ))}
@@ -214,6 +227,13 @@ const pulauIslands = [
                 <label class="pr-crumb" tabindex="0" for="st-nasional">Indonesia</label>
                 <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
                 <label class="pr-crumb on" tabindex="0" for="st-pulau">Jawa</label>
+              </nav>
+              <nav class="crumbs crumbs-provinsi-banten" aria-label="Lokasi" style="flex-wrap:wrap;align-items:center;gap:2px">
+                <label class="pr-crumb" tabindex="0" for="st-nasional">Indonesia</label>
+                <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
+                <label class="pr-crumb" tabindex="0" for="st-pulau">Jawa</label>
+                <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
+                <label class="pr-crumb on" tabindex="0" for="st-provinsi-banten">Banten</label>
               </nav>
               <nav class="crumbs crumbs-provinsi" aria-label="Lokasi" style="flex-wrap:wrap;align-items:center;gap:2px">
                 <label class="pr-crumb" tabindex="0" for="st-nasional">Indonesia</label>
@@ -234,6 +254,15 @@ const pulauIslands = [
                 </nav>
               ))}
 
+              <nav class="crumbs crumbs-kota-banten" aria-label="Lokasi" style="flex-wrap:wrap;align-items:center;gap:2px">
+                <label class="pr-crumb" tabindex="0" for="st-nasional">Indonesia</label>
+                <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
+                <label class="pr-crumb" tabindex="0" for="st-pulau">Jawa</label>
+                <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
+                <label class="pr-crumb" tabindex="0" for="st-provinsi-banten">Banten</label>
+                <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
+                <label class="pr-crumb on" tabindex="0" for="st-kota-banten">Kota/Kabupaten</label>
+              </nav>
           <div class="pr-map-row" style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:20px">
             <div class="pr-map-col">
               <div class="pr-map-frame">
@@ -252,6 +281,14 @@ const pulauIslands = [
                       <div class="pr-city-base" aria-hidden="true" style={`clip-path:${DKI_BASE}`}></div>
                       {cityRegions.map((region) => (
                         <label class={`pr-shape pr-city pr-city-${region.slug}`} role="button" for={`st-kota-${region.slug}`} aria-label={region.label} style={`clip-path:${region.clip};--t:${region.t}%`}></label>
+                      ))}
+                    </div>
+                    <label class="pr-banten-hit" role="button" for="st-provinsi-banten" aria-label="Banten" style="left:5.71%;top:16.67%;width:13.81%;height:35.71%"></label>
+                    <div class="pr-banten-city-layer" style="left:5.71%;top:16.67%;width:13.81%;height:35.71%">
+                      <div class="pr-city-underlay" aria-hidden="true"></div>
+                      <div class="pr-city-base" aria-hidden="true" style={`clip-path:${BANTEN_BASE}`}></div>
+                      {bantenCityRegions.map((region) => (
+                        <label class={`pr-shape pr-city pr-city-banten-${region.slug}`} role="button" for="st-kota-banten" aria-label={region.label} style={`clip-path:${region.clip};--t:${region.t}%`}></label>
                       ))}
                     </div>
                   </div>
@@ -359,6 +396,31 @@ const pulauIslands = [
                   ))}
                 </div>
               </div>
+
+               <div class="pr-panel panel-provinsi-banten" style="flex-direction:column;gap:16px">
+                 <div style="display:flex;flex-direction:column;gap:2px">
+                   <p style="margin:0;font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--accent-text)">PROVINSI</p>
+                   <h3 style="margin:0;font-size:22px;font-weight:700;letter-spacing:-0.02em;color:var(--title)">Banten</h3>
+                   <p style="margin:0;font-size:14px;color:var(--body)">Pilih kota atau kabupaten untuk melihat pejabat di tingkat wilayah.</p>
+                 </div>
+                 <div style="display:flex;flex-direction:column;gap:8px">
+                   <h4 style="margin:0;font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--meta)">KOTA &amp; KABUPATEN</h4>
+                   {bantenCityRegions.map((city) => (
+                     <label class="pr-row" tabindex="0" for="st-kota-banten" style="text-decoration:none;cursor:pointer">
+                       <span style="font-weight:600">{city.label}</span>
+                       <span class="pr-st on">Segera</span>
+                     </label>
+                   ))}
+                 </div>
+               </div>
+
+               <div class="pr-panel panel-kota-banten" style="flex-direction:column;gap:16px">
+                 <div style="display:flex;flex-direction:column;gap:2px">
+                   <p style="margin:0;font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--accent-text)">PROVINSI</p>
+                   <h3 style="margin:0;font-size:22px;font-weight:700;letter-spacing:-0.02em;color:var(--title)">Banten</h3>
+                   <p style="margin:0;font-size:14px;color:var(--body)">Data pejabat wilayah Banten sedang disiapkan.</p>
+                 </div>
+               </div>
 
               {cityRegions.map((city) => {
                 const data = cityData[city.slug];
