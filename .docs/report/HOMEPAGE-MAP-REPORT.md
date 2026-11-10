@@ -1,7 +1,7 @@
 # Homepage map report
 
 Date: 2026-11-10
-Evidence commit: `ec043089df02c4c86772d117d2d40a1182084f86`
+Evidence commit: `1096f5c`
 Raw `make verify` log: `.docs/report/VERIFY-2026-11-10.log` (774 lines, exit 0)
 
 ## 1. Summary
@@ -34,13 +34,23 @@ is still radio inputs plus `:checked` CSS selectors.
 | Item | Value |
 |---|---|
 | Java box (world %) | `left 23.02`, `top 65`, `size 20` |
-| City box (world %) | `left 26.087`, `top 68.609`, `size 2.4` |
+| City box (world %) | `left 26.924`, `top 68.61`, `width 0.878`, `height 2.342` |
 | Island camera | `translate(-115.1%, -325%) scale(5)` |
-| Province/kota camera | `translate(-1086.96%, -2858.71%) scale(41.667)` |
+| Province/kota camera | `translate(-1118.37%, -2929.55%) scale(42.699)` |
 
-- `CITY_BOX` is exactly the right/bottom 12% of the Java box. The province
-  camera is derived from that box (`1 / 0.024 = 41.667`), so the 2.4%-wide box
-  fills the 2.5:1 frame with one uniform scale. No axis is stretched.
+- `CITY_BOX` now matches the real DKI Jakarta bounding box (geoBoundaries ADM1,
+  ODbL) so the province silhouette is the actual simplified Jakarta shape rather
+  than a rectangle: a western bulge, the Jakarta Bay in the centre, and the
+  eastern Cakung arm. The 4.39 x 11.71 slot keeps the 1:1.01 aspect of the real
+  region; the camera (`100 / 2.342 = 42.699`) fills the frame height, leaving a
+  small sea margin above for Kepulauan Seribu. No axis is stretched.
+- The kota layer uses simplified geoBoundaries ADM2 outlines so the six
+  administrasi (including Kepulauan Seribu) tile the real silhouette. A pale
+  DKI base closes the seams and a grey underlay closes the gap to Banten/Jawa
+  Barat while leaving the bay as sea.
+- Banten and Jawa Barat coast points were moved to `19.52% 19.01%` and
+  `23.91% 19.00%` so DKI sits in its coastal slot without poking into the sea
+  or leaving gaps.
 - The kota layer is nested inside `.pr-java` at
   `left:15.335%; top:18.045%; width:12%; height:12%`.
 - DKI is rendered by the kota layer itself; the separate DKI province polygon
@@ -98,7 +108,7 @@ Lighthouse from the same run (Perf / A11y / Best practices):
 
 ```
 $ git log -1 --format=%H
-ec043089df02c4c86772d117d2d40a1182084f86
+1096f5c
 $ git status --short
 (empty)
 ```

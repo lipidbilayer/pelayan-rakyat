@@ -27,7 +27,7 @@ test("map zooms continuously through island, province and kota", async ({ page }
   await pick(page, "DKI Jakarta");
   await page.waitForTimeout(1200);
   expect(await checked(page, "st-provinsi")).toBe(true);
-  expect(await transform(page)).toContain("matrix(41.667, 0, 0, 41.667");
+  expect(await transform(page)).toContain("matrix(42.699, 0, 0, 42.699");
   await expect(page.locator(".panel-provinsi")).toBeVisible();
 
   await pick(page, "Jakarta Selatan");
