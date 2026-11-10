@@ -55,7 +55,7 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 /* Pale DKI base closes seams between the kota shapes; the grey underlay closes
    the gap to Banten/Jawa Barat while leaving the bay above the coast as sea. */
 .pr-city-base{position:absolute;inset:0;pointer-events:none;background:color-mix(in srgb,var(--accent) 35%,var(--card))}
-.pr-city-underlay{position:absolute;left:0;top:17%;width:100%;height:83%;background:var(--land);pointer-events:none;clip-path:polygon(0 0,12% 0,12% 8.43%,100% 8.43%,100% 100%,0 100%)}
+.pr-city-underlay{position:absolute;left:0;top:8.2%;width:100%;height:91.8%;background:var(--land);pointer-events:none}
 .pr-dki-hit{position:absolute;z-index:2;display:block;background:transparent;pointer-events:none}
 
 #st-nasional:checked ~ .pr-map-row .pr-world{transform:translate(0,0) scale(1)}
