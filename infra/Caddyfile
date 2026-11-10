@@ -20,7 +20,7 @@
 # The static site has no inline scripts or styles. Pagefind compiles its local
 # search index with WebAssembly, so it needs 'wasm-unsafe-eval'.
 (pelayan_csp) {
-	header Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; font-src 'self'; style-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self'; manifest-src 'self'"
+	header Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self'; manifest-src 'self'"
 }
 
 {$SITE_ADDRESS:http://:80} {
