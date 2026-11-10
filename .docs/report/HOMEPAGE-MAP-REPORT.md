@@ -1,7 +1,7 @@
 # Homepage map report
 
 Date: 2026-11-10
-Evidence commit: `1096f5c`
+Evidence commit: `1c229e4`
 Raw `make verify` log: `.docs/report/VERIFY-2026-11-10.log` (774 lines, exit 0)
 
 ## 1. Summary
@@ -108,7 +108,7 @@ Lighthouse from the same run (Perf / A11y / Best practices):
 
 ```
 $ git log -1 --format=%H
-1096f5c
+1c229e4
 $ git status --short
 (empty)
 ```
