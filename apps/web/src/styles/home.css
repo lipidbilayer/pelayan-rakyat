@@ -1,0 +1,50 @@
+body{margin:0}
+.pr{--bg:#fcfcfd;--card:#ffffff;--line:#e2e8f0;--line-strong:#cbd5e1;--title:#0f172a;--body:#475569;--meta:#64748b;--chip:#f8fafc;--ink:#0f172a;--ink-on:#ffffff;--track:#eef2f6;
+--amber-bg:#fffbeb;--amber-fg:#92400e;--amber-line:#fde68a;--rose-bg:#f5f3ff;--rose-fg:#5b21b6;--rose-line:#ddd6fe;--accent:#c8102e;--accent-on:#ffffff;--accent-text:#b91c1c;--neutral-bg:#f1f5f9;--neutral-fg:#334155;--against:#c2410c;--support:#1d4ed8}
+.pr.dark{--bg:#09090b;--card:#121215;--line:#27272a;--line-strong:#3f3f46;--title:#fafafa;--body:#a1a1aa;--meta:#a1a1aa;--chip:#18181b;--ink:#fafafa;--ink-on:#09090b;--track:#27272a;
+--amber-bg:#2a1f07;--amber-fg:#fcd34d;--amber-line:#57400d;--rose-bg:#1e1533;--rose-fg:#c4b5fd;--rose-line:#3b2a6b;--accent:#dc2626;--accent-on:#ffffff;--accent-text:#f87171;--neutral-bg:#1f1f23;--neutral-fg:#d4d4d8;--against:#fb923c;--support:#60a5fa}
+.pr a{color:inherit;text-decoration:none}
+.pr a:hover{color:var(--title)}
+.pr-item{transition:border-color .15s}
+.pr-item:hover{border-color:var(--line-strong)}
+.pr-tab{font:inherit;font-size:14px;font-weight:500;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--body);cursor:pointer}
+.pr-tab:hover{border-color:var(--line-strong)}
+.pr-tab.on{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+.pr{--hero:#c8102e;--motif:rgba(255,255,255,0.17)}
+.pr.dark{--hero:#9b0f25;--motif:rgba(255,255,255,0.13)}
+.pr-hero{background-color:var(--hero);background-image:
+radial-gradient(ellipse 46% 52% at 50% 58%,var(--hero) 0,var(--hero) 55%,transparent 100%),
+radial-gradient(circle at 0 0,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 100% 0,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 0 100%,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 100% 100%,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 50% 50%,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 50% 50%,var(--motif) 0,var(--motif) 3px,transparent 3px);
+background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px}
+.pr-hero a:hover{color:#ffffff;text-decoration:underline}
+.pr .pr-cta:hover{color:var(--hero);text-decoration:none}
+.pr-hero :focus-visible{outline-color:#ffffff}
+.pr{--sea:#f1f5f9;--land:#cbd5e1}
+.pr.dark{--sea:#0f0f12;--land:#3f3f46}
+.pr-land{transition:filter .15s}
+.pr-land:hover{filter:brightness(0.9)}
+.pr-land:focus-visible{filter:brightness(0.75);outline:0}
+.pr-crumb{font:inherit;font-size:14px;font-weight:500;min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--meta);cursor:pointer}
+.pr-crumb:hover{color:var(--title);text-decoration:underline}
+.pr-crumb.on{color:var(--title);font-weight:600;cursor:default;text-decoration:none}
+.pr-row{font:inherit;width:100%;min-height:52px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--title);cursor:pointer}
+.pr-row:hover{border-color:var(--line-strong)}
+.pr-st{font-size:12px;font-weight:600;color:var(--meta)}
+.pr-st.on{color:var(--accent-text)}
+@media (prefers-reduced-motion:no-preference){
+.pr-stage.zinA{animation:przinA .6s cubic-bezier(.2,.7,.2,1)}
+.pr-stage.zinB{animation:przinB .6s cubic-bezier(.2,.7,.2,1)}
+.pr-stage.zoutA{animation:przoutA .6s cubic-bezier(.2,.7,.2,1)}
+.pr-stage.zoutB{animation:przoutB .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes przinA{from{transform:scale(0.22);opacity:0}}
+@keyframes przinB{from{transform:scale(0.22);opacity:0}}
+@keyframes przoutA{from{transform:scale(2.6);opacity:0}}
+@keyframes przoutB{from{transform:scale(2.6);opacity:0}}}
+.pr :focus-visible{outline:2px solid var(--title);outline-offset:2px}
+.pr-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:720px){.pr-navlinks{display:none !important}.pr-kbd{display:none !important}}
