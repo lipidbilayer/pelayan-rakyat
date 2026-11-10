@@ -46,12 +46,13 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 .pr-world{position:absolute;inset:0;transform-origin:0 0;transition:transform .9s cubic-bezier(.65,0,.35,1);will-change:transform}
 .pr-shape{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;margin:0;display:block;text-decoration:none}
 .pr-shape-static{cursor:default}
-.pr-java{position:absolute;left:23.02%;top:65%;width:20%;height:20%;opacity:1;transition:opacity .25s ease}
+.pr-java{position:absolute;left:23.02%;top:65%;width:20%;height:20%;pointer-events:none}
 .pr-prov{background:var(--fill,var(--land));pointer-events:none;z-index:2}
 .pr-prov-on{cursor:pointer}
 .pr-java-hit{position:absolute;inset:0;width:100%;height:100%;display:block;background:transparent;cursor:pointer;z-index:1}
-.pr-city-layer{position:absolute;z-index:3;opacity:0;pointer-events:none;transition:opacity .2s ease}
-.pr-city{background:color-mix(in srgb,var(--accent) var(--t),var(--card));transform:scaleX(2.6);transform-origin:50% 50%;cursor:pointer}
+.pr-city-layer{position:absolute;z-index:3;pointer-events:none}
+.pr-city{background:color-mix(in srgb,var(--accent) var(--t),var(--card));cursor:pointer}
+.pr-dki-hit{position:absolute;z-index:2;display:block;background:transparent;pointer-events:none}
 
 #st-nasional:checked ~ .pr-map-row .pr-world{transform:translate(0,0) scale(1)}
 #st-pulau:checked ~ .pr-map-row .pr-world{transform:translate(-115.1%,-325%) scale(5)}
@@ -61,11 +62,10 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 #st-kota-barat:checked ~ .pr-map-row .pr-world,
 #st-kota-pusat:checked ~ .pr-map-row .pr-world,
 #st-kota-timur:checked ~ .pr-map-row .pr-world,
-#st-kota-selatan:checked ~ .pr-map-row .pr-world{transform:translate(-779.4%,-2071.85%) scale(30.395)}
+#st-kota-selatan:checked ~ .pr-map-row .pr-world{transform:translate(-1086.96%,-2858.71%) scale(41.667)}
 
 #st-pulau:checked ~ .pr-map-row .pr-prov-on{pointer-events:auto}
-#st-nasional:checked ~ .pr-map-row .pr-java,
-#st-pulau:checked ~ .pr-map-row .pr-java{opacity:1;transition-delay:0s}
+#st-pulau:checked ~ .pr-map-row .pr-dki-hit{pointer-events:auto;cursor:pointer}
 #st-pulau:checked ~ .pr-map-row .pr-java-hit,
 #st-provinsi:checked ~ .pr-map-row .pr-java-hit,
 #st-kota-seribu:checked ~ .pr-map-row .pr-java-hit,
@@ -74,20 +74,13 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 #st-kota-pusat:checked ~ .pr-map-row .pr-java-hit,
 #st-kota-timur:checked ~ .pr-map-row .pr-java-hit,
 #st-kota-selatan:checked ~ .pr-map-row .pr-java-hit{pointer-events:none}
-#st-provinsi:checked ~ .pr-map-row .pr-java,
-#st-kota-seribu:checked ~ .pr-map-row .pr-java,
-#st-kota-utara:checked ~ .pr-map-row .pr-java,
-#st-kota-barat:checked ~ .pr-map-row .pr-java,
-#st-kota-pusat:checked ~ .pr-map-row .pr-java,
-#st-kota-timur:checked ~ .pr-map-row .pr-java,
-#st-kota-selatan:checked ~ .pr-map-row .pr-java{opacity:0;transition-delay:.45s}
 #st-provinsi:checked ~ .pr-map-row .pr-city-layer,
 #st-kota-seribu:checked ~ .pr-map-row .pr-city-layer,
 #st-kota-utara:checked ~ .pr-map-row .pr-city-layer,
 #st-kota-barat:checked ~ .pr-map-row .pr-city-layer,
 #st-kota-pusat:checked ~ .pr-map-row .pr-city-layer,
 #st-kota-timur:checked ~ .pr-map-row .pr-city-layer,
-#st-kota-selatan:checked ~ .pr-map-row .pr-city-layer{opacity:1;pointer-events:auto;transition-delay:.35s}
+#st-kota-selatan:checked ~ .pr-map-row .pr-city-layer{pointer-events:auto}
 #st-kota-seribu:checked ~ .pr-map-row .pr-city-seribu,
 #st-kota-utara:checked ~ .pr-map-row .pr-city-utara,
 #st-kota-barat:checked ~ .pr-map-row .pr-city-barat,
@@ -97,17 +90,17 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 
 .pr-map-label{position:absolute;width:0;height:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;z-index:4;transition:opacity .2s ease}
 .pr-map-label>span{white-space:nowrap;font-size:12px;font-weight:600;color:var(--title)}
-.lab-prov>span{transform:scale(.2)}
-.lab-kota>span{color:#ffffff;transform:scale(.0329)}
+.lab-kota>span{color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.lab-kota-seribu>span{color:var(--title);text-shadow:none}
 #st-nasional:checked ~ .pr-map-row .lab-nat{opacity:1}
-#st-pulau:checked ~ .pr-map-row .lab-prov{opacity:1;transition-delay:.45s}
+#st-pulau:checked ~ .pr-map-row .lab-prov{opacity:1;transition-delay:.85s}
 #st-provinsi:checked ~ .pr-map-row .lab-kota,
 #st-kota-seribu:checked ~ .pr-map-row .lab-kota,
 #st-kota-utara:checked ~ .pr-map-row .lab-kota,
 #st-kota-barat:checked ~ .pr-map-row .lab-kota,
 #st-kota-pusat:checked ~ .pr-map-row .lab-kota,
 #st-kota-timur:checked ~ .pr-map-row .lab-kota,
-#st-kota-selatan:checked ~ .pr-map-row .lab-kota{opacity:1;transition-delay:.5s}
+#st-kota-selatan:checked ~ .pr-map-row .lab-kota{opacity:1;transition-delay:.85s}
 
 .pr-map-frame .zoom-out{display:none;position:absolute;top:12px;right:12px;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--title);cursor:pointer;z-index:5}
 #st-pulau:checked ~ .pr-map-row .zoom-pulau{display:inline-flex}
@@ -144,4 +137,4 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 .pr-crumb{display:inline-flex;align-items:center}
 
 @media (max-width:720px){.lab-nat,.lab-prov,.lab-kota,.pr-legend{display:none !important}}
-@media (prefers-reduced-motion:reduce){.pr-world,.pr-map-label,.pr-city-layer,.pr-java{transition:none}}
+@media (prefers-reduced-motion:reduce){.pr-world,.pr-map-label{transition:none}}
