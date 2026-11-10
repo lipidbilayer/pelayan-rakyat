@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Pelayan Rakyat — Beranda</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.pr{--bg:#fcfcfd;--card:#ffffff;--line:#e2e8f0;--line-strong:#cbd5e1;--title:#0f172a;--body:#475569;--meta:#64748b;--chip:#f8fafc;--ink:#0f172a;--ink-on:#ffffff;--track:#eef2f6;
+--amber-bg:#fffbeb;--amber-fg:#92400e;--amber-line:#fde68a;--rose-bg:#f5f3ff;--rose-fg:#5b21b6;--rose-line:#ddd6fe;--accent:#c8102e;--accent-on:#ffffff;--accent-text:#b91c1c;--neutral-bg:#f1f5f9;--neutral-fg:#334155;--against:#c2410c;--support:#1d4ed8}
+.pr.dark{--bg:#09090b;--card:#121215;--line:#27272a;--line-strong:#3f3f46;--title:#fafafa;--body:#a1a1aa;--meta:#a1a1aa;--chip:#18181b;--ink:#fafafa;--ink-on:#09090b;--track:#27272a;
+--amber-bg:#2a1f07;--amber-fg:#fcd34d;--amber-line:#57400d;--rose-bg:#1e1533;--rose-fg:#c4b5fd;--rose-line:#3b2a6b;--accent:#dc2626;--accent-on:#ffffff;--accent-text:#f87171;--neutral-bg:#1f1f23;--neutral-fg:#d4d4d8;--against:#fb923c;--support:#60a5fa}
+.pr a{color:inherit;text-decoration:none}
+.pr a:hover{color:var(--title)}
+.pr-item{transition:border-color .15s}
+.pr-item:hover{border-color:var(--line-strong)}
+.pr-tab{font:inherit;font-size:14px;font-weight:500;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--body);cursor:pointer}
+.pr-tab:hover{border-color:var(--line-strong)}
+.pr-tab.on{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+.pr{--hero:#c8102e;--motif:rgba(255,255,255,0.17)}
+.pr.dark{--hero:#9b0f25;--motif:rgba(255,255,255,0.13)}
+.pr-hero{background-color:var(--hero);background-image:
+radial-gradient(ellipse 46% 52% at 50% 58%,var(--hero) 0,var(--hero) 55%,transparent 100%),
+radial-gradient(circle at 0 0,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 100% 0,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 0 100%,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 100% 100%,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 50% 50%,transparent 23px,var(--motif) 23px,var(--motif) 24px,transparent 24px),
+radial-gradient(circle at 50% 50%,var(--motif) 0,var(--motif) 3px,transparent 3px);
+background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px}
+.pr-hero a:hover{color:#ffffff;text-decoration:underline}
+.pr .pr-cta:hover{color:var(--hero);text-decoration:none}
+.pr-hero :focus-visible{outline-color:#ffffff}
+.pr{--sea:#f1f5f9;--land:#cbd5e1}
+.pr.dark{--sea:#0f0f12;--land:#3f3f46}
+.pr-land{transition:filter .15s}
+.pr-land:hover{filter:brightness(0.9)}
+.pr-land:focus-visible{filter:brightness(0.75);outline:0}
+.pr-crumb{font:inherit;font-size:14px;font-weight:500;min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--meta);cursor:pointer}
+.pr-crumb:hover{color:var(--title);text-decoration:underline}
+.pr-crumb.on{color:var(--title);font-weight:600;cursor:default;text-decoration:none}
+.pr-row{font:inherit;width:100%;min-height:52px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--title);cursor:pointer}
+.pr-row:hover{border-color:var(--line-strong)}
+.pr-st{font-size:12px;font-weight:600;color:var(--meta)}
+.pr-st.on{color:var(--accent-text)}
+@media (prefers-reduced-motion:no-preference){
+.pr-stage.zinA{animation:przinA .6s cubic-bezier(.2,.7,.2,1)}
+.pr-stage.zinB{animation:przinB .6s cubic-bezier(.2,.7,.2,1)}
+.pr-stage.zoutA{animation:przoutA .6s cubic-bezier(.2,.7,.2,1)}
+.pr-stage.zoutB{animation:przoutB .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes przinA{from{transform:scale(0.22);opacity:0}}
+@keyframes przinB{from{transform:scale(0.22);opacity:0}}
+@keyframes przoutA{from{transform:scale(2.6);opacity:0}}
+@keyframes przoutB{from{transform:scale(2.6);opacity:0}}}
+.pr :focus-visible{outline:2px solid var(--title);outline-offset:2px}
+.pr-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:720px){.pr-navlinks{display:none !important}.pr-kbd{display:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="min-height: 100vh; background: var(--bg); color: var(--body); font-family: Geist, Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5">
+
+<div style="min-height: min(100vh, 860px); display: flex; flex-direction: column">
+<div class="pr-hero" style="flex: 3 1 auto; display: flex; flex-direction: column; color: #ffffff">
+<header>
+<div style="max-width: 1120px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<a href="#" style="font-weight: 700; font-size: 15px; letter-spacing: 0.08em; color: #ffffff; display: inline-flex; align-items: center; gap: 10px"><span aria-hidden="true" style="display: flex; flex-direction: column; width: 20px; height: 14px; border: 1px solid rgba(255,255,255,0.8); border-radius: 3px; overflow: hidden; box-sizing: border-box"><span style="flex: 1; background: var(--accent)"></span><span style="flex: 1; background: #ffffff"></span></span>PELAYAN RAKYAT</a>
+<span style="font-size: 11px; font-weight: 500; color: #ffffff; border: 1px solid rgba(255,255,255,0.55); border-radius: 999px; padding: 3px 10px">Independen — Bukan Situs Pemerintah</span>
+</div>
+<nav style="display: flex; align-items: center; gap: 8px">
+<div class="pr-navlinks" style="display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 500">
+<a href="#peta" style="padding: 12px 12px">Peta</a>
+<a href="#isu" style="padding: 12px 12px">Isu Hangat</a>
+<a href="#janji" style="padding: 12px 12px">Janji</a>
+<a href="#kirim" style="padding: 12px 12px">Kirim Laporan</a>
+</div>
+<a class="pr-cta" href="#kirim" style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; box-sizing: border-box; padding: 0 16px; border: 1px solid #ffffff; background: #ffffff; border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--hero)">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+Laporkan Jejak</a>
+</nav>
+</div>
+</header>
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; padding: 40px 24px 96px">
+<p style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; color: rgba(255,255,255,0.9)">PLATFORM AKUNTABILITAS PUBLIK</p>
+<h1 style="margin: 0; max-width: 920px; font-size: clamp(36px, 5.6vw, 64px); line-height: 1.05; font-weight: 700; letter-spacing: -0.03em; color: #ffffff; text-wrap: balance">Pantau Janji dan Rekam Jejak Pejabat Publik.</h1>
+<p style="margin: 0; max-width: 600px; font-size: 19px; color: rgba(255,255,255,0.94)">Basis data independen berbasis bukti primer. Kita gaji, kita nilai.</p>
+</div>
+</div>
+
+<section style="flex: 2 1 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 24px; padding: 0 24px 24px">
+<form role="search" style="width: 100%; max-width: 760px; margin-top: -36px; display: flex; align-items: center; gap: 12px; box-sizing: border-box; padding: 0 12px 0 22px; height: 72px; background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 10px 30px rgba(15,23,42,0.12)">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; color: var(--meta)"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<label for="cari" class="pr-sr">Cari pejabat, kebijakan, atau isu</label>
+<input id="cari" type="search" placeholder="Cari nama pejabat, kebijakan, atau isu hangat..." style="flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; color: var(--title)">
+<kbd class="pr-kbd" style="flex: none; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; color: var(--meta); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; background: var(--chip)">⌘K</kbd>
+<button type="submit" style="flex: none; height: 48px; padding: 0 22px; border: 0; border-radius: 12px; background: var(--accent); color: var(--accent-on); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Cari</button>
+</form>
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; font-size: 13px">
+<span style="color: var(--meta); margin-right: 4px">Isu Populer:</span>
+<a href="#" style="padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); font-weight: 500">#KenaikanTarifAir</a>
+<a href="#" style="padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); font-weight: 500">#BanjirDKI</a>
+<a href="#" style="padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); font-weight: 500">#JanjiTransportasi</a>
+<a href="#" style="padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); font-weight: 500">#DPRDDKI</a>
+</div>
+<a href="#peta" style="margin-top: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 13px; font-weight: 500; color: var(--meta)">Atau pilih wilayah di peta
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></a>
+</section>
+</div>
+
+<main style="max-width: 1120px; margin: 0 auto; padding: 48px 24px 80px; display: flex; flex-direction: column; gap: 72px">
+
+<section id="peta" style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: clamp(26px, 3.2vw, 36px); line-height: 1.1; font-weight: 700; letter-spacing: -0.03em; color: var(--title)">Siapa yang melayani wilayah Anda?</h2>
+<p style="margin: 0; max-width: 620px; font-size: 17px; color: var(--meta)">Pilih pulau, lalu provinsi, lalu kota. Daftar pejabat wilayah itu muncul di samping peta.</p>
+</div>
+
+<nav aria-label="Lokasi" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px">
+<sc-for list="{{crumbs}}" as="c" hint-placeholder-count="2">
+<span aria-hidden="true" style="color: var(--line-strong); padding: 0 4px">{{c.sep}}</span>
+<button type="button" class="{{c.cls}}" onClick="{{c.pick}}">{{c.label}}</button>
+</sc-for>
+</nav>
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px">
+
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<div style="position: relative; width: 100%; aspect-ratio: 2.5 / 1; background: var(--sea); border: 1px solid var(--line); border-radius: 16px; overflow: hidden">
+<div class="{{stageCls}}" style="position: absolute; inset: 0; transform-origin: {{origin}}">
+<sc-for list="{{shapes}}" as="s" hint-placeholder-count="7">
+<button type="button" class="pr-land" aria-label="{{s.aria}}" onClick="{{s.pick}}" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0; padding: 0; cursor: pointer; clip-path: {{s.clip}}; background: {{s.fill}}"></button>
+</sc-for>
+<sc-for list="{{shapes}}" as="s" hint-placeholder-count="7">
+<span aria-hidden="true" style="position: absolute; left: {{s.lx}}; top: {{s.ly}}; transform: translate(-50%, -50%); pointer-events: none; white-space: nowrap; font-size: 12px; font-weight: 600; color: {{s.ink}}">{{s.label}}</span>
+</sc-for>
+</div>
+<sc-if value="{{canOut}}" hint-placeholder-val="{{false}}">
+<button type="button" onClick="{{zoomOut}}" aria-label="Perkecil peta" style="position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--title); cursor: pointer"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5M8 11h6"></path></svg></button>
+</sc-if>
+<div style="position: absolute; left: 14px; bottom: 12px; display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; font-weight: 500; color: var(--body)">
+<span style="display: inline-flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 3px; background: var(--accent)"></span>Data tersedia</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 3px; background: var(--land)"></span>Segera</span>
+</div>
+</div>
+<sc-if value="{{hasNotice}}" hint-placeholder-val="{{false}}">
+<p role="status" style="margin: 0; padding: 12px 14px; border: 1px dashed var(--line-strong); border-radius: 10px; font-size: 14px; color: var(--body)">{{notice}}</p>
+</sc-if>
+<p style="margin: 0; font-size: 12px; color: var(--meta)">Peta disederhanakan untuk contoh tampilan. Versi final memakai batas wilayah resmi.</p>
+</div>
+
+<aside style="flex: 1 1 320px; min-width: 0; box-sizing: border-box; padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<p style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--accent-text)">{{regionKind}}</p>
+<h3 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--title)">{{regionName}}</h3>
+<p style="margin: 0; font-size: 14px">{{regionHint}}</p>
+</div>
+
+<sc-if value="{{showKec}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<div style="flex: 1 1 130px; display: flex; flex-direction: column; gap: 4px">
+<label for="kec" style="font-size: 12px; font-weight: 500; color: var(--meta)">Kecamatan</label>
+<select id="kec" style="font: inherit; font-size: 14px; height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--title)">
+<option>Semua kecamatan</option>
+<sc-for list="{{kecs}}" as="k" hint-placeholder-count="3"><option>{{k.label}}</option></sc-for>
+</select>
+</div>
+<div style="flex: 1 1 130px; display: flex; flex-direction: column; gap: 4px">
+<label for="kel" style="font-size: 12px; font-weight: 500; color: var(--meta)">Kelurahan</label>
+<select id="kel" style="font: inherit; font-size: 14px; height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--title)">
+<option>Semua kelurahan</option>
+</select>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{showOfficials}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h4 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--meta)">PEJABAT WILAYAH INI</h4>
+<sc-for list="{{officials}}" as="o" hint-placeholder-count="4">
+<a href="#peta" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; box-sizing: border-box; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px">
+<span style="display: flex; flex-direction: column; min-width: 0">
+<span style="font-size: 12px; color: var(--meta)">{{o.role}}</span>
+<span style="font-weight: 600; color: var(--title)">{{o.name}}</span>
+</span>
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; color: var(--meta)"><path d="M9 6l6 6-6 6"></path></svg>
+</a>
+</sc-for>
+</div>
+</sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h4 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--meta)">{{childrenTitle}}</h4>
+<sc-for list="{{children}}" as="ch" hint-placeholder-count="6">
+<button type="button" class="pr-row" onClick="{{ch.pick}}"><span style="font-weight: 600">{{ch.label}}</span><span class="{{ch.stCls}}">{{ch.status}}</span></button>
+</sc-for>
+</div>
+</aside>
+
+</div>
+</section>
+
+<section id="isu" style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; color: var(--meta)">ISU HANGAT</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+
+<article style="flex: 1 1 320px; box-sizing: border-box; padding: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h3 style="margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--title)">Polemik Kenaikan Tarif Air Bersih</h3>
+<p style="margin: 0; font-size: 14px">Perdebatan Komisi B DPRD &amp; Pemprov DKI</p>
+</div>
+<span style="flex: none; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--neutral-bg); color: var(--neutral-fg)">Dalam Perdebatan</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; font-size: 13px; font-weight: 500">
+<div style="display: flex; align-items: center; gap: 10px">
+<div role="img" aria-label="3 pejabat menolak" style="display: flex">
+<span style="width: 28px; height: 28px; border-radius: 50%; background: var(--chip); border: 2px solid var(--against); box-sizing: border-box"></span>
+<span style="width: 28px; height: 28px; border-radius: 50%; background: var(--chip); border: 2px solid var(--against); box-sizing: border-box; margin-left: -8px"></span>
+<span style="width: 28px; height: 28px; border-radius: 50%; background: var(--chip); border: 2px solid var(--against); box-sizing: border-box; margin-left: -8px"></span>
+</div>
+<span style="color: var(--against)">3 Menolak</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<div role="img" aria-label="2 pejabat mendukung" style="display: flex">
+<span style="width: 28px; height: 28px; border-radius: 50%; background: var(--chip); border: 2px dashed var(--support); box-sizing: border-box"></span>
+<span style="width: 28px; height: 28px; border-radius: 50%; background: var(--chip); border: 2px dashed var(--support); box-sizing: border-box; margin-left: -8px"></span>
+</div>
+<span style="color: var(--support)">2 Mendukung</span>
+</div>
+</div>
+</article>
+
+<article id="janji" style="flex: 1 1 320px; box-sizing: border-box; padding: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: var(--meta)">SOROTAN JANJI</p>
+<h3 style="margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--title)">Normalisasi Kali &amp; Relokasi Hunian</h3>
+<p style="margin: 0; font-size: 14px">Gubernur DKI Jakarta</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div role="img" aria-label="45 persen terealisasi" style="height: 8px; border-radius: 999px; background: var(--track); overflow: hidden">
+<div style="width: 45%; height: 100%; border-radius: 999px; background: var(--accent)"></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 13px">
+<span style="font-weight: 600; color: var(--title)">45% Terealisasi</span>
+<span style="font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; color: var(--meta)">Target: Akhir 2026</span>
+</div>
+</div>
+</article>
+
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; color: var(--meta)">RADAR JEJAK TERBARU</h2>
+<div role="group" aria-label="Saring jenis catatan" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{tabs}}" as="tab" hint-placeholder-count="4">
+<button type="button" class="{{tab.cls}}" aria-pressed="{{tab.on}}" onClick="{{tab.pick}}">{{tab.label}}</button>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px">
+
+<sc-if value="{{showJanji}}" hint-placeholder-val="{{true}}">
+<article class="pr-item" style="padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 13px; color: var(--meta)">
+<span style="font-weight: 500; color: var(--body); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px">Gubernur DKI</span>
+<span aria-hidden="true">•</span>
+<span>Kemarin, 14:20</span>
+<span style="margin-left: auto; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--amber-bg); color: var(--amber-fg); border: 1px solid var(--amber-line)">Tertunda</span>
+</div>
+<h3 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--title)">Nama Pejabat</h3>
+<p style="margin: 0; max-width: 720px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">Alokasi anggaran penambahan armada Transjakarta koridor timur belum masuk dalam pembahasan KUA-PPAS.</p>
+<a href="#" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; margin-top: 2px; border-radius: 6px; background: var(--chip); border: 1px solid var(--line); font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; color: var(--body)">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg>
+Sumber: Risalah Rapat Banggar</a>
+</article>
+</sc-if>
+
+<sc-if value="{{showBlunder}}" hint-placeholder-val="{{true}}">
+<article class="pr-item" style="padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 13px; color: var(--meta)">
+<span style="font-weight: 500; color: var(--body); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px">DPRD DKI Komisi E</span>
+<span aria-hidden="true">•</span>
+<span>2 hari lalu</span>
+<span style="margin-left: auto; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--rose-bg); color: var(--rose-fg); border: 1px solid var(--rose-line)">Inkonsistensi</span>
+</div>
+<h3 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--title)">Nama Pejabat</h3>
+<p style="margin: 0; max-width: 720px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">Menyatakan program beasiswa tidak mendesak, berlawanan dengan janji kampanye tertulis pada November 2024.</p>
+<a href="#" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; margin-top: 2px; border-radius: 6px; background: var(--chip); border: 1px solid var(--line); font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; color: var(--body)">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg>
+Sumber: Rekaman Paripurna &amp; Arsip Berita</a>
+</article>
+</sc-if>
+
+<sc-if value="{{showEmpty}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0; padding: 28px 20px; border: 1px dashed var(--line-strong); border-radius: 12px; text-align: center; color: var(--meta)">Belum ada pernyataan terverifikasi minggu ini.</p>
+</sc-if>
+
+</div>
+</section>
+
+</main>
+
+<footer style="border-top: 1px solid var(--line)">
+<div style="max-width: 1120px; margin: 0 auto; padding: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; font-size: 13px; color: var(--meta)">
+<span>Independen — bukan situs pemerintah. Tampilan contoh: nama dan catatan di halaman ini bukan data nyata.</span>
+<div style="display: flex; gap: 20px"><a href="#">Metode</a><a href="#">Tentang</a><a href="#">Koreksi</a></div>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":1280,"height":2760}}'>
+class Component extends DCLogic {
+mapVals() {
+const st = this.state || {};
+const level = st.level || 'nasional';
+const kota = st.kota || '';
+const deep = (l) => l === 'provinsi' || l === 'kota';
+const go = (o, dir, origin) => () => this.setState(Object.assign({ notice: '' }, (deep(o.level) && deep(level)) ? {} : { tick: (st.tick || 0) + 1, dir: dir || 'out', origin: origin || '50% 50%' }, o));
+const soon = (name) => () => this.setState({ notice: name + ' belum tersedia. Tahap awal mencakup DKI Jakarta; wilayah lain menyusul.' });
+const geo = (b) => (p) => [((p[0] - b.w) / (b.e - b.w)) * 100, ((b.n - p[1]) / (b.n - b.s)) * 100];
+const flat = (p) => [((p[0] + 75) / 250) * 100, p[1]];
+const mk = (d, proj) => {
+const q = d.pts.map(proj);
+const cx = q.reduce((a, p) => a + p[0], 0) / q.length + (d.dx || 0);
+const cy = q.reduce((a, p) => a + p[1], 0) / q.length + (d.dy || 0);
+return { clip: 'polygon(' + q.map((p) => p[0].toFixed(2) + '% ' + p[1].toFixed(2) + '%').join(',') + ')', lx: cx.toFixed(2) + '%', ly: cy.toFixed(2) + '%' };
+};
+const A = 'var(--accent)', L = 'var(--land)';
+const tint = (n) => 'color-mix(in srgb, var(--accent) ' + n + '%, var(--card))';
+let regs = [], proj = null, officials = [], kecs = [];
+let regionKind = 'NEGARA', regionName = 'Indonesia', regionHint = 'Pilih pulau di peta atau dari daftar.', childrenTitle = 'PULAU';
+
+if (level === 'nasional') {
+proj = geo({ w: 94, e: 142, n: 7.1, s: -12.1 });
+regs = [
+{ label: 'Sumatera', pts: [[95.3,5.6],[97.5,5.2],[98.7,3.8],[100.5,2.2],[103.5,0.5],[103.8,-1],[106,-3],[105.8,-5.8],[104.6,-5.9],[102.3,-4],[100.4,-1],[98.7,1.7],[97,3.2],[95.3,5.2]] },
+{ label: 'Jawa', to: { level: 'pulau' }, dy: 7, pts: [[105.2,-6.8],[106.1,-5.9],[108.3,-6.3],[110.8,-6.4],[112.7,-6.9],[114.5,-7.7],[114.4,-8.7],[111,-8.3],[108,-7.8],[106.4,-7.4]] },
+{ label: 'Kalimantan', pts: [[109,1.5],[110,1],[112,1.5],[114,1.5],[115.5,3],[115.8,4.3],[117.6,4.2],[117.9,3],[119,1],[117.5,-0.8],[116.5,-2.5],[116,-4],[114.6,-4.1],[113,-3.3],[111.8,-3.5],[110.1,-2.9],[109.9,-1.2],[109,0.3]] },
+{ label: 'Sulawesi', dx: 1, pts: [[119.8,0.8],[120.9,1.3],[123,0.9],[125.2,1.6],[124.6,0.4],[121.5,0.45],[120.3,-0.9],[121.6,-0.9],[123.3,-0.8],[121.8,-1.9],[122.9,-4.4],[121.6,-4.8],[120.9,-2.6],[120.4,-3],[120.4,-5.6],[119.4,-5.5],[119.5,-3.5],[118.8,-2.6],[119.8,-0.2]] },
+{ label: 'Bali & Nusa Tenggara', dy: 9, pts: [[114.6,-8.2],[117,-8.1],[119.2,-8.3],[122.9,-8.2],[125.1,-9],[124,-10.3],[120.2,-10.2],[119,-9.4],[116.8,-9],[115,-8.8]] },
+{ label: 'Maluku', dx: 2, pts: [[127.5,2],[128.7,1.5],[128.2,-0.6],[128.1,-2.9],[130.8,-3],[130.6,-3.6],[128.2,-3.5],[128.1,-2.9],[128.2,-0.6],[127.6,0.5]] },
+{ label: 'Papua', pts: [[131,-0.8],[132.4,-0.4],[134.2,-0.8],[134,-2.5],[135.5,-3.3],[137.8,-1.5],[141,-2.6],[141,-9.1],[138.9,-8.2],[137.6,-8.4],[138.5,-7.2],[137.8,-5.3],[135,-4.4],[133,-4.1],[132.7,-2.8],[131.2,-1.5]] }
+];
+} else if (level === 'pulau') {
+regionKind = 'PULAU'; regionName = 'Jawa'; regionHint = 'Pilih provinsi di peta atau dari daftar.'; childrenTitle = 'PROVINSI';
+proj = geo({ w: 104.6, e: 115.1, n: -5.2, s: -9.4 });
+regs = [
+{ label: 'Banten', pts: [[105.2,-6.8],[106.1,-5.9],[106.65,-6],[106.65,-6.45],[106.4,-6.8],[106.4,-7.4]] },
+{ label: 'DKI Jakarta', to: { level: 'provinsi' }, dy: -9, pts: [[106.68,-6.02],[107,-6.08],[107,-6.4],[106.68,-6.4]] },
+{ label: 'Jawa Barat', dy: 3, pts: [[107,-6.05],[108.3,-6.3],[108.9,-6.8],[108.8,-7.8],[108,-7.8],[106.4,-7.4],[106.4,-6.8],[106.65,-6.45],[107,-6.45]] },
+{ label: 'Jawa Tengah', dy: -3, pts: [[108.9,-6.8],[110,-6.9],[110.8,-6.4],[111.6,-6.7],[111.2,-8.25],[110.85,-8.2],[110.8,-7.7],[110.1,-7.6],[110,-7.9],[108.8,-7.8]] },
+{ label: 'DI Yogyakarta', dy: 11, pts: [[110.05,-7.65],[110.8,-7.72],[110.82,-8.2],[110,-7.92]] },
+{ label: 'Jawa Timur', pts: [[111.6,-6.7],[112.7,-6.9],[114.5,-7.7],[114.4,-8.7],[112.5,-8.4],[111.2,-8.25]] }
+];
+} else {
+proj = flat;
+regionKind = 'PROVINSI'; regionName = 'DKI Jakarta'; regionHint = 'Pilih kota untuk melihat pejabat di tingkat kota.'; childrenTitle = 'KOTA & KABUPATEN';
+regs = [
+{ label: 'Kepulauan Seribu', t: 30, dx: 9, pts: [[6,4],[12,3],[13,9],[7,10]] },
+{ label: 'Jakarta Utara', t: 34, pts: [[18,22],[88,18],[90,32],[60,36],[40,34],[20,36]] },
+{ label: 'Jakarta Barat', t: 48, pts: [[8,34],[20,36],[40,34],[42,52],[34,62],[12,56]] },
+{ label: 'Jakarta Pusat', t: 62, pts: [[40,34],[60,36],[60,52],[42,52]] },
+{ label: 'Jakarta Timur', t: 42, pts: [[60,36],[90,32],[94,70],[84,92],[64,84],[60,52]] },
+{ label: 'Jakarta Selatan', t: 54, pts: [[42,52],[60,52],[64,84],[52,96],[36,82],[34,62]] }
+];
+regs.forEach((d) => { d.sel = kota === d.label; d.to = { level: 'kota', kota: d.label }; });
+if (level === 'kota') {
+const kab = kota === 'Kepulauan Seribu';
+regionKind = kab ? 'KABUPATEN ADMINISTRASI' : 'KOTA ADMINISTRASI'; regionName = kota; regionHint = 'Persempit ke kecamatan atau kelurahan, atau buka profil pejabat.';
+officials = [
+{ role: (kab ? 'Bupati ' : 'Wali Kota ') + kota, name: 'Nama Pejabat' },
+{ role: (kab ? 'Wakil Bupati ' : 'Wakil Wali Kota ') + kota, name: 'Nama Pejabat' },
+{ role: 'Kapolres wilayah ini', name: 'Nama Pejabat' },
+{ role: 'DPRD DKI Jakarta', name: 'Anggota dari dapil wilayah ini' },
+{ role: 'DPR RI & DPD RI', name: 'Wakil Jakarta di tingkat pusat' }
+];
+if (kota === 'Jakarta Selatan') kecs = ['Cilandak','Jagakarsa','Kebayoran Baru','Kebayoran Lama','Mampang Prapatan','Pancoran','Pasar Minggu','Pesanggrahan','Setiabudi','Tebet'].map((x) => ({ label: x }));
+} else {
+officials = [
+{ role: 'Gubernur DKI Jakarta', name: 'Nama Pejabat' },
+{ role: 'Wakil Gubernur DKI Jakarta', name: 'Nama Pejabat' },
+{ role: 'Ketua DPRD DKI Jakarta', name: 'Nama Pejabat' },
+{ role: 'Kapolda Metro Jaya', name: 'Nama Pejabat' },
+{ role: 'DPRD DKI Jakarta', name: '106 anggota, 10 dapil' }
+];
+}
+}
+
+const shapes = regs.map((d) => {
+const g = mk(d, proj);
+d.pick = d.to ? go(d.to, 'in', g.lx + ' ' + g.ly) : soon(d.label);
+const solid = d.sel || (d.to && !d.t);
+return { label: d.label, aria: d.label + (d.to ? '' : ' (segera)'), pick: d.pick, clip: g.clip, lx: g.lx, ly: g.ly,
+fill: d.sel ? A : (d.t ? tint(d.t) : (d.to ? A : L)),
+ink: solid && !d.dy ? '#ffffff' : 'var(--title)' };
+});
+const children = regs.map((d) => ({ label: d.label, pick: d.pick, status: d.sel ? 'Dipilih' : (d.to ? 'Tersedia' : 'Segera'), stCls: 'pr-st' + (d.to ? ' on' : '') }));
+
+const trail = [['Indonesia', { level: 'nasional', kota: '' }]];
+if (level !== 'nasional') trail.push(['Jawa', { level: 'pulau', kota: '' }]);
+if (deep(level)) trail.push(['DKI Jakarta', { level: 'provinsi', kota: '' }]);
+if (level === 'kota') trail.push([kota, { level: 'kota', kota: kota }]);
+const crumbs = trail.map((t, i) => ({ label: t[0], sep: i ? '›' : '', pick: go(t[1]), cls: 'pr-crumb' + (i === trail.length - 1 ? ' on' : '') }));
+
+return {
+shapes, children, officials, kecs, crumbs,
+regionKind, regionName, regionHint, childrenTitle,
+showOfficials: officials.length > 0,
+showKec: level === 'kota',
+stageCls: 'pr-stage' + (st.tick ? ' ' + (st.dir === 'in' ? 'zin' : 'zout') + (st.tick % 2 ? 'A' : 'B') : ''),
+origin: st.origin || '50% 50%',
+canOut: level !== 'nasional',
+zoomOut: go(trail.length > 1 ? trail[trail.length - 2][1] : trail[0][1]),
+notice: st.notice || '', hasNotice: !!st.notice
+};
+}
+renderVals() {
+const tab = (this.state && this.state.tab) || 'semua';
+const defs = [['semua', 'Semua'], ['janji', 'Janji & Realisasi'], ['pernyataan', 'Pernyataan'], ['blunder', 'Blunder & Inkonsistensi']];
+return Object.assign(this.mapVals(), {
+rootClass: 'pr' + ((this.props.dark ?? false) ? ' dark' : ''),
+tabs: defs.map((d) => ({ label: d[1], on: tab === d[0], cls: 'pr-tab' + (tab === d[0] ? ' on' : ''), pick: () => this.setState({ tab: d[0] }) })),
+showJanji: tab === 'semua' || tab === 'janji',
+showBlunder: tab === 'semua' || tab === 'blunder',
+showEmpty: tab === 'pernyataan'
+});
+}
+}
+</script>
+</body>
+</html>
