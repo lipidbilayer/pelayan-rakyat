@@ -82,7 +82,7 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 #st-provinsi-banten:checked ~ .pr-map-row .pr-world,
 #st-kota-banten:checked ~ .pr-map-row .pr-world{transform:translate(-307.69%,-956.68%) scale(14.003)}
 #st-provinsi-jawabarat:checked ~ .pr-map-row .pr-world,
-#st-kota-jawabarat:checked ~ .pr-map-row .pr-world{transform:translate(-286.01%,-801.86%) scale(11.655)}
+#st-kota-jawabarat:checked ~ .pr-map-row .pr-world{transform:translate(-293.88%,-801.86%) scale(11.655)}
 
 #st-pulau:checked ~ .pr-map-row .pr-prov-on{pointer-events:auto}
 #st-pulau:checked ~ .pr-map-row .pr-dki-hit{pointer-events:auto;cursor:pointer}
