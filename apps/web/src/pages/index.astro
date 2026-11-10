@@ -186,24 +186,24 @@ const pulauIslands = [
               </nav>
               <nav class="crumbs crumbs-pulau" aria-label="Lokasi" style="flex-wrap:wrap;align-items:center;gap:2px">
                 <label class="pr-crumb" tabindex="0" for="st-nasional">Indonesia</label>
-                <span aria-hidden="true" style="color:var(--line-strong);padding:0 4px">›</span>
+                <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
                 <label class="pr-crumb on" tabindex="0" for="st-pulau">Jawa</label>
               </nav>
               <nav class="crumbs crumbs-provinsi" aria-label="Lokasi" style="flex-wrap:wrap;align-items:center;gap:2px">
                 <label class="pr-crumb" tabindex="0" for="st-nasional">Indonesia</label>
-                <span aria-hidden="true" style="color:var(--line-strong);padding:0 4px">›</span>
+                <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
                 <label class="pr-crumb" tabindex="0" for="st-pulau">Jawa</label>
-                <span aria-hidden="true" style="color:var(--line-strong);padding:0 4px">›</span>
+                <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
                 <label class="pr-crumb on" tabindex="0" for="st-provinsi">DKI Jakarta</label>
               </nav>
               {cityRegions.map((city) => (
                 <nav class={`crumbs crumbs-kota crumbs-kota-${city.slug}`} aria-label="Lokasi" style="flex-wrap:wrap;align-items:center;gap:2px">
                   <label class="pr-crumb" tabindex="0" for="st-nasional">Indonesia</label>
-                  <span aria-hidden="true" style="color:var(--line-strong);padding:0 4px">›</span>
+                  <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
                   <label class="pr-crumb" tabindex="0" for="st-pulau">Jawa</label>
-                  <span aria-hidden="true" style="color:var(--line-strong);padding:0 4px">›</span>
+                  <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
                   <label class="pr-crumb" tabindex="0" for="st-provinsi">DKI Jakarta</label>
-                  <span aria-hidden="true" style="color:var(--line-strong);padding:0 4px">›</span>
+                  <span aria-hidden="true" style="display:inline-flex;align-items:center;line-height:1;color:var(--line-strong);padding:0 4px">›</span>
                   <label class="pr-crumb on" tabindex="0" for={`st-kota-${city.slug}`}>{city.label}</label>
                 </nav>
               ))}

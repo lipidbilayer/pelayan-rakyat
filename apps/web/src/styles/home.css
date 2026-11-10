@@ -51,7 +51,7 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 
 .pr-map-state{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;margin:0}
 .pr-map-row{position:relative}
-.pr-map-row .lvl{position:absolute;inset:0;opacity:0;pointer-events:none;transform:scale(0.82);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.7,.2,1)}
+.pr-map-row .lvl{position:absolute;inset:0;opacity:0;pointer-events:none;transform:scale(0.22);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
 .pr-map-row .pr-panel{display:none}
 .pr-map-shell .crumbs{display:none}
 .pr-map-row .zoom-out{display:none}
@@ -125,3 +125,5 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 
 .pr-map-shell .crumbs-kota-selatan{display:none}
 #st-kota-selatan:checked ~ .crumbs-kota-selatan{display:flex}
+
+.pr-crumb{display:inline-flex;align-items:center}
