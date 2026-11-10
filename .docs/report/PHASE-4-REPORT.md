@@ -11,6 +11,7 @@ Raw `make verify` log: `.docs/report/VERIFY-2026-11-09.log` (773 lines, exit 0)
 - `apps/web/tests/phase2.spec.ts`: 9 passed (JS budget updated).
 - Build guards: 3 passed. Playwright: 9 passed. Lighthouse: 100/100/100 on `/`, `/kirim`, `/akun`.
 - PocketBase idle RAM: 55.2 MiB.
+- Homepage map rework (continuous national -> island -> DKI -> kota zoom) is documented in `.docs/report/HOMEPAGE-MAP-REPORT.md`.
 
 ## 2. Carry-over (C4.1–C4.3)
 | ID | Status | Evidence |
