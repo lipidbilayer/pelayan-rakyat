@@ -19,6 +19,16 @@ const nationalRegions = [
   { label: "Papua", target: "st-nasional", fill: "var(--land)", ink: "var(--title)", lx: "86.93%", ly: "57.45%", clip: "polygon(77.08% 41.15%,80.00% 39.06%,83.75% 41.15%,83.33% 50.00%,86.46% 54.17%,91.25% 44.79%,97.92% 50.52%,97.92% 84.38%,93.54% 79.69%,90.83% 80.73%,92.71% 74.48%,91.25% 64.58%,85.42% 59.90%,81.25% 58.33%,80.62% 51.56%,77.50% 44.79%)" },
 ];
 
+const javaIsland = nationalRegions.find((region) => region.label === "Jawa")!;
+
+const JAVA_BOX = { left: 23.02, top: 65, size: 20 };
+const CITY_BOX = { left: 25.642, top: 68.164, size: 3.29 };
+const CITY_STRETCH = 2.6;
+const worldCoord = (box: { left: number; top: number; size: number }, value: string, axis: "x" | "y") =>
+  (axis === "x" ? box.left : box.top) + (parseFloat(value) * box.size) / 100;
+const cityCenterX = CITY_BOX.left + CITY_BOX.size / 2;
+const cityLabelX = (value: string) => cityCenterX + (worldCoord(CITY_BOX, value, "x") - cityCenterX) * CITY_STRETCH;
+
 const pulauRegions = [
   { label: "Banten", target: "st-pulau", fill: "var(--land)", ink: "var(--title)", lx: "15.56%", ly: "32.34%", clip: "polygon(5.71% 38.10%,14.29% 16.67%,19.52% 19.05%,19.52% 29.76%,17.14% 38.10%,17.14% 52.38%)" },
   { label: "DKI Jakarta", target: "st-provinsi", fill: "var(--accent)", ink: "var(--title)", lx: "21.33%", ly: "15.40%", clip: "polygon(19.81% 19.52%,22.86% 20.95%,22.86% 28.57%,19.81% 28.57%)" },
@@ -29,7 +39,7 @@ const pulauRegions = [
 ];
 
 const cityRegions = [
-  { label: "Kepulauan Seribu", slug: "seribu", t: 30, lx: "42.80%", ly: "6.50%", clip: "polygon(32.40% 4.00%,34.80% 3.00%,35.20% 9.00%,32.80% 10.00%)" },
+  { label: "Kepulauan Seribu", slug: "seribu", t: 30, lx: "37.00%", ly: "6.50%", clip: "polygon(32.40% 4.00%,34.80% 3.00%,35.20% 9.00%,32.80% 10.00%)" },
   { label: "Jakarta Utara", slug: "utara", t: 34, lx: "51.07%", ly: "29.67%", clip: "polygon(37.20% 22.00%,65.20% 18.00%,66.00% 32.00%,54.00% 36.00%,46.00% 34.00%,38.00% 36.00%)" },
   { label: "Jakarta Barat", slug: "barat", t: 48, lx: "40.40%", ly: "45.67%", clip: "polygon(33.20% 34.00%,38.00% 36.00%,46.00% 34.00%,46.80% 52.00%,43.60% 62.00%,34.80% 56.00%)" },
   { label: "Jakarta Pusat", slug: "pusat", t: 62, lx: "50.20%", ly: "43.50%", clip: "polygon(46.00% 34.00%,54.00% 36.00%,54.00% 52.00%,46.80% 52.00%)" },
@@ -209,52 +219,54 @@ const pulauIslands = [
               ))}
 
           <div class="pr-map-row" style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:20px">
-            <div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:12px">
-              <div style="position:relative;width:100%;aspect-ratio:2.5/1;background:var(--sea);border:1px solid var(--line);border-radius:16px;overflow:hidden">
-                <div class="pr-stage" style="position:absolute;inset:0;transform-origin:50% 50%">
-                  <div class="lvl lvl-nasional">
-                    {nationalRegions.map((region) => (
-                      <>
-                        <label class="pr-land" tabindex="0" role="button" for={region.target} aria-label={region.label} style={`position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;clip-path:${region.clip};background:${region.fill};text-decoration:none`}></label>
-                        <span aria-hidden="true" style={`position:absolute;left:${region.lx};top:${region.ly};transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;font-size:12px;font-weight:600;color:${region.ink}`}>{region.label}</span>
-                      </>
-                    ))}
-                  </div>
-                  <div class="lvl lvl-pulau">
+            <div class="pr-map-col">
+              <div class="pr-map-frame">
+                <div class="pr-world">
+                  {nationalRegions.filter((region) => region.label !== "Jawa").map((region) => (
+                    <div class="pr-shape pr-shape-static" aria-hidden="true" style={`clip-path:${region.clip};background:var(--land)`}></div>
+                  ))}
+
+                  <div class="pr-java">
                     {pulauRegions.map((region) => (
-                      <>
-                        <label class="pr-land" tabindex="0" role="button" for={region.target} aria-label={region.label} style={`position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;clip-path:${region.clip};background:${region.fill};text-decoration:none`}></label>
-                        <span aria-hidden="true" style={`position:absolute;left:${region.lx};top:${region.ly};transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;font-size:12px;font-weight:600;color:${region.ink}`}>{region.label}</span>
-                      </>
+                      <label class={`pr-shape pr-prov${region.target === "st-provinsi" ? " pr-prov-on" : ""}`} for={region.target} aria-label={region.label} style={`clip-path:${region.clip};--fill:${region.fill}`}></label>
                     ))}
                   </div>
-                  <div class="lvl lvl-provinsi">
+
+                  <div class="pr-city-layer" style="left:25.642%;top:68.164%;width:3.29%;height:3.29%">
                     {cityRegions.map((region) => (
-                      <>
-                        <label class="pr-land" tabindex="0" role="button" for={`st-kota-${region.slug}`} aria-label={region.label} style={`position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;clip-path:${region.clip};background:color-mix(in srgb,var(--accent) ${region.t}%,var(--card));text-decoration:none`}></label>
-                        <span aria-hidden="true" style={`position:absolute;left:${region.lx};top:${region.ly};transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;font-size:12px;font-weight:600;color:#ffffff`}>{region.label}</span>
-                      </>
+                      <label class={`pr-shape pr-city pr-city-${region.slug}`} for={`st-kota-${region.slug}`} aria-label={region.label} style={`clip-path:${region.clip};--t:${region.t}%`}></label>
                     ))}
                   </div>
+
+                  <label class="pr-java-hit" tabindex="0" role="button" for="st-pulau" aria-label="Jawa" style={`clip-path:${javaIsland.clip}`}></label>
+
+                  {nationalRegions.map((region) => (
+                    <span class="pr-map-label lab-nat" aria-hidden="true" style={`left:${region.lx};top:${region.ly}`}><span>{region.label}</span></span>
+                  ))}
+                  {pulauRegions.map((region) => (
+                    <span class="pr-map-label lab-prov" aria-hidden="true" style={`left:${worldCoord(JAVA_BOX, region.lx, "x")}%;top:${worldCoord(JAVA_BOX, region.ly, "y")}%`}><span>{region.label}</span></span>
+                  ))}
+                  {cityRegions.map((region) => (
+                    <span class="pr-map-label lab-kota" aria-hidden="true" style={`left:${cityLabelX(region.lx)}%;top:${worldCoord(CITY_BOX, region.ly, "y")}%`}><span>{region.label}</span></span>
+                  ))}
                 </div>
 
-                <label class="zoom-out zoom-pulau" tabindex="0" role="button" for="st-nasional" aria-label="Perkecil peta" style="position:absolute;top:12px;right:12px;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--title);cursor:pointer">
+                <label class="zoom-out zoom-pulau" tabindex="0" role="button" for="st-nasional" aria-label="Perkecil peta">
                   <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5M8 11h6"></path></svg>
                 </label>
-                <label class="zoom-out zoom-provinsi" tabindex="0" role="button" for="st-pulau" aria-label="Perkecil peta" style="position:absolute;top:12px;right:12px;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--title);cursor:pointer">
+                <label class="zoom-out zoom-provinsi" tabindex="0" role="button" for="st-pulau" aria-label="Perkecil peta">
                   <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5M8 11h6"></path></svg>
                 </label>
-                <label class="zoom-out zoom-kota" tabindex="0" role="button" for="st-provinsi" aria-label="Perkecil peta" style="position:absolute;top:12px;right:12px;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--title);cursor:pointer">
+                <label class="zoom-out zoom-kota" tabindex="0" role="button" for="st-provinsi" aria-label="Perkecil peta">
                   <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5M8 11h6"></path></svg>
                 </label>
 
-                <div style="position:absolute;left:14px;bottom:12px;display:flex;flex-wrap:wrap;gap:14px;font-size:12px;font-weight:500;color:var(--body)">
+                <div class="pr-legend" style="position:absolute;left:14px;bottom:12px;display:flex;flex-wrap:wrap;gap:14px;font-size:12px;font-weight:500;color:var(--body);z-index:5">
                   <span style="display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="width:12px;height:12px;border-radius:3px;background:var(--accent)"></span>Data tersedia</span>
                   <span style="display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="width:12px;height:12px;border-radius:3px;background:var(--land)"></span>Segera</span>
                 </div>
               </div>
               <p style="margin:0;font-size:12px;color:var(--meta)">Peta disederhanakan untuk contoh tampilan. Versi final memakai batas wilayah resmi.</p>
-
             </div>
 
             <aside style="flex:1 1 320px;min-width:0;box-sizing:border-box;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:16px;display:flex;flex-direction:column;gap:16px">
@@ -267,7 +279,7 @@ const pulauIslands = [
                 <div style="display:flex;flex-direction:column;gap:8px">
                   <h4 style="margin:0;font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--meta)">PULAU</h4>
                   {islands.map((island) => (
-                    <label class="pr-row" tabindex="0"" for={island.on ? "st-pulau" : "st-nasional"} style="text-decoration:none;cursor:pointer">
+                    <label class="pr-row" tabindex="0" for={island.on ? "st-pulau" : "st-nasional"} style="text-decoration:none;cursor:pointer">
                       <span style="font-weight:600">{island.label}</span>
                       <span class={island.on ? "pr-st on" : "pr-st"}>{island.status}</span>
                     </label>
@@ -284,7 +296,7 @@ const pulauIslands = [
                 <div style="display:flex;flex-direction:column;gap:8px">
                   <h4 style="margin:0;font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--meta)">PROVINSI</h4>
                   {pulauIslands.map((island) => (
-                    <label class="pr-row" tabindex="0"" for={island.on ? "st-provinsi" : "st-pulau"} style="text-decoration:none;cursor:pointer">
+                    <label class="pr-row" tabindex="0" for={island.on ? "st-provinsi" : "st-pulau"} style="text-decoration:none;cursor:pointer">
                       <span style="font-weight:600">{island.label}</span>
                       <span class={island.on ? "pr-st on" : "pr-st"}>{island.status}</span>
                     </label>
@@ -313,7 +325,7 @@ const pulauIslands = [
                 <div style="display:flex;flex-direction:column;gap:8px">
                   <h4 style="margin:0;font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--meta)">KOTA &amp; KABUPATEN</h4>
                   {cityRegions.map((city) => (
-                    <label class="pr-row" tabindex="0"" for={`st-kota-${city.slug}`} style="text-decoration:none;cursor:pointer">
+                    <label class="pr-row" tabindex="0" for={`st-kota-${city.slug}`} style="text-decoration:none;cursor:pointer">
                       <span style="font-weight:600">{city.label}</span>
                       <span class="pr-st on">Tersedia</span>
                     </label>
@@ -362,7 +374,7 @@ const pulauIslands = [
                     <div style="display:flex;flex-direction:column;gap:8px">
                       <h4 style="margin:0;font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--meta)">KOTA &amp; KABUPATEN</h4>
                       {cityRegions.map((item) => (
-                        <label class="pr-row" tabindex="0"" for={`st-kota-${item.slug}`} style="text-decoration:none;cursor:pointer">
+                        <label class="pr-row" tabindex="0" for={`st-kota-${item.slug}`} style="text-decoration:none;cursor:pointer">
                           <span style="font-weight:600">{item.label}</span>
                           <span class={item.slug === city.slug ? "pr-st on" : "pr-st on"}>{item.slug === city.slug ? "Dipilih" : "Tersedia"}</span>
                         </label>
