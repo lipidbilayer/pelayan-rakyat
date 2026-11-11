@@ -1,42 +1,52 @@
 # Homepage map report
 
-Date: 2026-11-10
-Evidence commit: `1c229e4`
-Raw `make verify` log: `.docs/report/VERIFY-2026-11-10.log` (774 lines, exit 0)
+Date: 2026-11-11
+Evidence commit: Working copy verified with `./scripts/verify.sh` (exit 0)
 
 ## 1. Summary
 
-The homepage map is now one continuous CSS "world". The camera translates and
-scales the same geometry through four levels:
+The homepage map is one continuous CSS "world". The camera translates and
+scales the same geometry through multiple levels:
 
 1. Indonesia (national)
 2. Jawa (island)
-3. DKI Jakarta (province)
-4. Kota administrasi (kota)
+3. DKI Jakarta, Banten, and Jawa Barat (province drill-downs)
+4. Kota / Kabupaten administrasi
 
-There is no level swap and no cross-fade. The kota layer lives at DKI's actual
-coordinates inside the Java geometry, so province and kota shapes keep the exact
-shape they have on the island view. No `<script>` was added; the state machine
-is still radio inputs plus `:checked` CSS selectors.
+There is no level swap and no cross-fade. DKI Jakarta, Banten, and Jawa Barat
+use simplified squary polygonal geometry where shared borders share identical
+mathematical coordinates in the Java world space, completely eliminating gaps
+and overlaps.
 
-## 2. What was wrong
+When zoomed into Jakarta, neighbouring Banten and Jawa Barat remain visible and
+greyed out, flush against Jakarta's west, south, and east borders, maintaining
+seamless geographic context. Furthermore, Banten and Jawa Barat are now fully
+drillable into their respective kota and kabupaten regions.
 
-- The island-to-province step swapped to a different, larger copy of the city
-  map (opacity fade) instead of zooming the existing one.
-- The city layer used `transform:scaleX(2.6)`, which distorted the province and
-  all kota shapes. DKI therefore looked different at province level than on the
-  island map.
-- The `.pr-java` wrapper intercepted pointer events over the whole Java
-  bounding box, so parts of the island were not clickable.
+## 2. What was improved
+
+- Replaced non-flush ADM2 curved boundaries and arbitrary rectangular slots with
+  clean, simplified squary polygons that tile flush against each other.
+- Shared edges between Banten (`x=19.52%, y=19.28%-29.76%`), DKI Jakarta, and
+  Jawa Barat (`y=29.76%, x=19.52%-23.91%` and `x=23.91%, y=19.46%-29.76%`)
+  match with 0px gap and 0px overlap.
+- Enabled continuous CSS-only zoom and kota/kabupaten layers for Banten
+  (`scale(14.003)`) and Jawa Barat (`scale(11.655)`).
+- Synchronized breadcrumbs, zoom-out buttons, sidebar panels, and projected
+  unscaled labels for all drillable provinces.
 
 ## 3. Implementation
 
 | Item | Value |
 |---|---|
 | Java box (world %) | `left 23.02`, `top 65`, `size 20` |
-| City box (world %) | `left 26.924`, `top 68.61`, `width 0.878`, `height 2.342` |
+| DKI box (world %) | `left 26.924`, `top 68.61`, `width 0.878`, `height 2.342` |
+| Banten box (world %) | `left 24.162`, `top 68.334`, `width 2.762`, `height 7.142` |
+| Jawa Barat box (world %) | `left 26.448`, `top 68.80`, `width 4.762`, `height 8.580` |
 | Island camera | `translate(-115.1%, -325%) scale(5)` |
-| Province/kota camera | `translate(-1118.37%, -2929.55%) scale(42.699)` |
+| DKI province/kota camera | `translate(-1118.37%, -2929.55%) scale(42.699)` |
+| Banten province camera | `translate(-307.69%, -956.68%) scale(14.003)` |
+| Jawa Barat province camera | `translate(-293.88%, -801.86%) scale(11.655)` |
 
 - `CITY_BOX` now matches the real DKI Jakarta bounding box (geoBoundaries ADM1,
   ODbL) so the province silhouette is the actual simplified Jakarta shape rather
