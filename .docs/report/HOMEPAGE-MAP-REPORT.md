@@ -84,8 +84,11 @@ drillable into their respective kota and kabupaten regions.
   frame positions are projected at build time with the same camera constants
   (`CAMS` in `src/pages/index.astro`). This keeps text at 12 px and avoids a
   Chromium paint bug where inversely transformed text inside a heavily scaled
-  layer was painted at stale positions. Label fade-in is delayed until the
-  0.9 s camera transition finishes.
+  layer was painted at stale positions.
+- Camera transition optimized to 0.5s `cubic-bezier(.2,.8,.2,1)` with
+  `backface-visibility: hidden` and label fade-in delay tuned to 0.45s. This
+  eliminates post-zoom blurriness in Chromium caused by prolonged compositor
+  animations and delayed tile re-rasterization.
 - Labels are hidden below 720 px, matching the previous responsive behavior.
 
 ## 4. Interaction checks
@@ -134,4 +137,4 @@ $ git status --short
 (empty)
 ```
 
-Raw log: `.docs/report/VERIFY-2026-11-10.log` (774 lines, `make verify` exit 0).
+Raw log: `.docs/report/VERIFY-2026-11-11.log` (`./scripts/verify.sh` exit 0).

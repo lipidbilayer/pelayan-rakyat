@@ -43,8 +43,8 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 .pr-map-row{position:relative}
 .pr-map-col{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:12px}
 .pr-map-frame{position:relative;width:100%;aspect-ratio:2.5/1;background:var(--sea);border:1px solid var(--line);border-radius:16px;overflow:hidden;isolation:isolate}
-.pr-world{position:absolute;inset:0;transform-origin:0 0;transition:transform .9s cubic-bezier(.65,0,.35,1)}
-.pr-shape{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;margin:0;display:block;text-decoration:none}
+.pr-world{position:absolute;inset:0;transform-origin:0 0;transition:transform .5s cubic-bezier(.2,.8,.2,1);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.pr-shape{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;margin:0;display:block;text-decoration:none;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .pr-shape-static{cursor:default}
 .pr-java{position:absolute;left:23.02%;top:65%;width:20%;height:20%;pointer-events:none}
 .pr-prov{background:var(--fill,var(--land));pointer-events:none;z-index:2}
@@ -54,7 +54,7 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 .pr-city{background:color-mix(in srgb,var(--accent) var(--t),var(--card));cursor:pointer;pointer-events:none}
 /* Pale province base closes seams between kota shapes while keeping
    adjacent borders flush to neighbouring land. */
-.pr-city-base{position:absolute;inset:0;pointer-events:none;background:color-mix(in srgb,var(--accent) 35%,var(--card))}
+.pr-city-base{position:absolute;inset:0;pointer-events:none;background:color-mix(in srgb,var(--accent) 35%,var(--card));backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .pr-city-underlay{display:none}
 .pr-dki-hit{position:absolute;inset:0;z-index:3;display:block;background:transparent;pointer-events:none}
 .pr-banten-city-layer{position:absolute;inset:0;z-index:3;pointer-events:none;display:none}
@@ -119,7 +119,7 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 .lab-kota-seribu>span{color:var(--title);text-shadow:none}
 .pr-city:hover{filter:brightness(1.15);transition:filter .15s ease}
 #st-nasional:checked ~ .pr-map-row .lab-nat{opacity:1}
-#st-pulau:checked ~ .pr-map-row .lab-prov{opacity:1;transition-delay:.85s}
+#st-pulau:checked ~ .pr-map-row .lab-prov{opacity:1;transition-delay:.45s}
 #st-provinsi:checked ~ .pr-map-row .lab-kota,
 #st-kota-seribu:checked ~ .pr-map-row .lab-kota,
 #st-kota-utara:checked ~ .pr-map-row .lab-kota,
@@ -130,7 +130,7 @@ background-size:100% 100%,48px 48px,48px 48px,48px 48px,48px 48px,48px 48px,48px
 #st-provinsi-banten:checked ~ .pr-map-row .lab-banten,
 [id^="st-kota-banten-"]:checked ~ .pr-map-row .lab-banten,
 #st-provinsi-jawabarat:checked ~ .pr-map-row .lab-jawabarat,
-[id^="st-kota-jawabarat-"]:checked ~ .pr-map-row .lab-jawabarat{opacity:1;transition-delay:.85s}
+[id^="st-kota-jawabarat-"]:checked ~ .pr-map-row .lab-jawabarat{opacity:1;transition-delay:.45s}
 
 .pr-map-frame .zoom-out{display:none;position:absolute;top:12px;right:12px;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--title);cursor:pointer;z-index:5}
 #st-pulau:checked ~ .pr-map-row .zoom-pulau{display:inline-flex}
