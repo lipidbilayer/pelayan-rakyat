@@ -25,10 +25,11 @@ drillable into their respective kota and kabupaten regions.
 
 ## 2. What was improved
 
-- Replaced non-flush ADM2 curved boundaries and arbitrary rectangular slots with
-  clean, simplified squary polygons that tile flush against each other.
-- Shared edges between Banten (`x=19.52%, y=19.28%-29.76%`), DKI Jakarta, and
-  Jawa Barat (`y=29.76%, x=19.52%-23.91%` and `x=23.91%, y=19.46%-29.76%`)
+- Refined simplified squary polygons to faceted low-poly shapes with 6 to 10
+  corners each, eliminating plain 4-corner rectangular appearances while strictly
+  maintaining zero gaps and zero overlaps along shared borders.
+- Shared edges between Banten (`x=19.52%, y=19.28%-29.78%`), DKI Jakarta, and
+  Jawa Barat (`y=29.77%, x=19.52%-23.90%` and `x=23.90%, y=19.47%-29.77%`)
   match with 0px gap and 0px overlap.
 - Enabled continuous CSS-only zoom and kota/kabupaten layers for Banten
   (`scale(14.003)`) and Jawa Barat (`scale(11.655)`).

@@ -42,58 +42,58 @@ const CAMS = {
 
 // Simplified outline of DKI Jakarta mainland land area (y: 10.5% - 100%).
 // Closed seamlessly with the surrounding provinces (Banten on the west, Jawa Barat on east/south).
-const DKI_BASE = "polygon(0% 10.5%, 18% 10.5%, 30% 22%, 60% 22%, 75% 12%, 100% 12%, 100% 100%, 0% 100%)";
+const DKI_BASE = "polygon(0.00% 10.50%, 20.00% 10.00%, 45.00% 24.00%, 70.00% 18.00%, 100.00% 12.00%, 100.00% 100.00%, 0.00% 100.00%)";
 const project = (value: number, cam: { scale: number; tx: number; ty: number }, axis: "x" | "y") =>
   value * cam.scale + (axis === "x" ? cam.tx : cam.ty);
 
 const pulauRegions = [
-  { label: "Banten", target: "st-provinsi-banten", fill: "var(--land)", ink: "var(--title)", lx: "15.56%", ly: "32.34%", clip: "polygon(5.71% 38.10%,14.29% 16.67%,19.52% 19.28%,19.52% 29.76%,17.14% 38.10%,17.14% 52.38%)" },
-  { label: "DKI Jakarta", target: "st-provinsi", fill: "var(--accent)", ink: "var(--title)", lx: "21.33%", ly: "15.40%", clip: "polygon(19.81% 19.52%,22.86% 20.95%,22.86% 28.57%,19.81% 28.57%)" },
-  { label: "Jawa Barat", target: "st-provinsi-jawabarat", fill: "var(--land)", ink: "var(--title)", lx: "27.57%", ly: "42.81%", clip: "polygon(23.91% 19.46%,35.24% 26.19%,40.95% 38.10%,40.00% 61.90%,32.38% 61.90%,17.14% 52.38%,17.14% 38.10%,19.52% 29.76%,23.91% 29.76%)" },
+  { label: "Banten", target: "st-provinsi-banten", fill: "var(--land)", ink: "var(--title)", lx: "15.56%", ly: "32.34%", clip: "polygon(5.71% 38.10%, 12.34% 21.53%, 14.29% 16.67%, 16.07% 17.56%, 19.52% 19.28%, 19.52% 29.78%, 17.14% 38.10%, 17.14% 52.38%, 5.71% 43.45%)" },
+  { label: "DKI Jakarta", target: "st-provinsi", fill: "var(--accent)", ink: "var(--title)", lx: "21.33%", ly: "15.40%", clip: "polygon(19.81% 19.52%, 22.86% 20.95%, 22.86% 28.57%, 19.81% 28.57%)" },
+  { label: "Jawa Barat", target: "st-provinsi-jawabarat", fill: "var(--land)", ink: "var(--title)", lx: "27.57%", ly: "42.81%", clip: "polygon(23.90% 19.47%, 27.85% 21.82%, 35.24% 26.21%, 40.95% 38.09%, 40.00% 61.90%, 32.38% 61.90%, 17.14% 52.38%, 17.14% 38.09%, 19.52% 29.77%, 23.90% 29.77%)" },
   { label: "Jawa Tengah", target: "st-pulau", fill: "var(--land)", ink: "var(--title)", lx: "54.33%", ly: "49.98%", clip: "polygon(40.95% 38.10%,51.43% 40.48%,59.05% 28.57%,66.67% 35.71%,62.86% 72.62%,59.52% 71.43%,59.05% 59.52%,52.38% 57.14%,51.43% 64.29%,40.00% 61.90%)" },
   { label: "DI Yogyakarta", target: "st-pulau", fill: "var(--land)", ink: "var(--title)", lx: "55.40%", ly: "74.63%", clip: "polygon(51.90% 58.33%,59.05% 60.00%,59.24% 71.43%,51.43% 64.76%)" },
   { label: "Jawa Timur", target: "st-pulau", fill: "var(--land)", ink: "var(--title)", lx: "78.25%", ly: "61.31%", clip: "polygon(66.67% 35.71%,77.14% 40.48%,94.29% 59.52%,93.33% 83.33%,75.24% 76.19%,62.86% 72.62%)" },
 ];
 
-const BANTEN_BASE = "polygon(0.00% 60.00%, 62.10% 0.00%, 100.00% 7.30%, 100.00% 36.70%, 82.80% 60.00%, 82.80% 100.00%)";
+const BANTEN_BASE = "polygon(0.00% 60.00%, 48.00% 13.62%, 62.10% 0.00%, 75.00% 2.48%, 100.00% 7.30%, 100.00% 36.70%, 82.80% 60.00%, 82.80% 100.00%, 0.00% 75.00%)";
 const bantenCityRegions = [
-  { label: "Kota Cilegon", slug: "cilegon", t: 34, lx: "55.89%", ly: "12.00%", clip: "polygon(48.00% 13.62%, 62.10% 0.00%, 62.10% 18.00%, 43.47% 18.00%)" },
-  { label: "Serang", slug: "serang", t: 38, lx: "68.39%", ly: "9.61%", clip: "polygon(62.10% 0.00%, 75.00% 2.48%, 75.00% 18.00%, 62.10% 18.00%)" },
-  { label: "Kota Serang", slug: "serang-kota", t: 40, lx: "54.02%", ly: "28.08%", clip: "polygon(43.47% 18.00%, 75.00% 18.00%, 75.00% 36.70%, 24.12% 36.70%)" },
-  { label: "Tangerang", slug: "tangerang", t: 46, lx: "86.73%", ly: "11.37%", clip: "polygon(75.00% 2.48%, 100.00% 7.30%, 100.00% 18.00%, 75.00% 18.00%)" },
-  { label: "Kota Tangerang", slug: "tangerang-kota", t: 44, lx: "87.50%", ly: "22.75%", clip: "polygon(75.00% 18.00%, 100.00% 18.00%, 100.00% 27.50%, 75.00% 27.50%)" },
-  { label: "Kota Tangerang Selatan", slug: "tangerang-selatan", t: 48, lx: "87.50%", ly: "32.10%", clip: "polygon(75.00% 27.50%, 100.00% 27.50%, 100.00% 36.70%, 75.00% 36.70%)" },
-  { label: "Pandeglang", slug: "pandeglang", t: 42, lx: "30.41%", ly: "56.87%", clip: "polygon(24.12% 36.70%, 48.00% 36.70%, 48.00% 83.19%, 0.00% 60.00%)" },
-  { label: "Lebak", slug: "lebak", t: 50, lx: "68.40%", ly: "62.47%", clip: "polygon(48.00% 36.70%, 100.00% 36.70%, 82.80% 60.00%, 82.80% 100.00%, 48.00% 83.19%)" },
+  { label: "Kota Cilegon", slug: "cilegon", t: 34, lx: "50.00%", ly: "12.00%", clip: "polygon(48.00% 13.62%, 62.10% 0.00%, 62.10% 10.00%, 56.00% 18.00%, 43.47% 18.00%, 42.00% 15.00%)" },
+  { label: "Serang", slug: "serang", t: 38, lx: "66.00%", ly: "10.00%", clip: "polygon(62.10% 0.00%, 68.00% 1.20%, 75.00% 2.48%, 75.00% 14.00%, 75.00% 20.00%, 56.00% 20.00%, 43.47% 18.00%, 56.00% 18.00%, 62.10% 10.00%)" },
+  { label: "Kota Serang", slug: "serang-kota", t: 40, lx: "56.00%", ly: "28.00%", clip: "polygon(43.47% 18.00%, 56.00% 20.00%, 75.00% 20.00%, 75.00% 36.70%, 48.00% 36.70%, 34.00% 36.70%, 43.47% 26.00%)" },
+  { label: "Tangerang", slug: "tangerang", t: 46, lx: "86.00%", ly: "11.00%", clip: "polygon(75.00% 2.48%, 88.00% 4.80%, 100.00% 7.30%, 100.00% 18.00%, 86.00% 18.00%, 75.00% 18.00%, 75.00% 14.00%)" },
+  { label: "Kota Tangerang", slug: "tangerang-kota", t: 44, lx: "87.00%", ly: "23.00%", clip: "polygon(75.00% 18.00%, 86.00% 18.00%, 100.00% 18.00%, 100.00% 24.00%, 100.00% 28.00%, 86.00% 28.00%, 75.00% 28.00%)" },
+  { label: "Kota Tangerang Selatan", slug: "tangerang-selatan", t: 48, lx: "87.00%", ly: "32.00%", clip: "polygon(75.00% 28.00%, 86.00% 28.00%, 100.00% 28.00%, 100.00% 36.70%, 88.00% 36.70%, 75.00% 36.70%)" },
+  { label: "Pandeglang", slug: "pandeglang", t: 42, lx: "26.00%", ly: "62.00%", clip: "polygon(0.00% 60.00%, 18.00% 48.00%, 34.00% 36.70%, 48.00% 36.70%, 48.00% 58.00%, 48.00% 83.19%, 30.00% 92.00%, 12.00% 88.00%, 0.00% 75.00%)" },
+  { label: "Lebak", slug: "lebak", t: 50, lx: "70.00%", ly: "64.00%", clip: "polygon(48.00% 36.70%, 75.00% 36.70%, 100.00% 36.70%, 92.00% 48.00%, 82.80% 60.00%, 82.80% 100.00%, 64.00% 92.00%, 48.00% 83.19%, 48.00% 58.00%)" },
 ];
 
-const JAWABARAT_BASE = "polygon(28.40% 1.10%, 76.00% 16.80%, 100.00% 44.50%, 96.00% 100.00%, 64.00% 100.00%, 0.00% 77.80%, 0.00% 44.50%, 10.00% 25.10%, 28.40% 25.10%)";
+const JAWABARAT_BASE = "polygon(28.40% 1.10%, 45.00% 6.58%, 76.00% 16.80%, 100.00% 44.50%, 96.00% 100.00%, 64.00% 100.00%, 0.00% 77.80%, 0.00% 44.50%, 10.00% 25.10%, 28.40% 25.10%)";
 const jawabaratCityRegions = [
-  { label: "Bekasi", slug: "bekasi", t: 40, lx: "36.34%", ly: "14.41%", clip: "polygon(28.40% 1.10%, 45.00% 6.58%, 45.00% 25.10%, 28.40% 25.10%)" },
-  { label: "Karawang", slug: "karawang", t: 40, lx: "52.11%", ly: "17.01%", clip: "polygon(45.00% 6.58%, 60.00% 11.52%, 60.00% 25.10%, 45.00% 25.10%)" },
-  { label: "Subang", slug: "subang", t: 40, lx: "67.36%", ly: "19.52%", clip: "polygon(60.00% 11.52%, 76.00% 16.80%, 76.00% 25.10%, 60.00% 25.10%)" },
-  { label: "Indramayu", slug: "indramayu", t: 40, lx: "81.26%", ly: "28.93%", clip: "polygon(76.00% 16.80%, 91.77% 35.00%, 76.00% 35.00%)" },
-  { label: "Cirebon", slug: "cirebon", t: 40, lx: "87.16%", ly: "48.05%", clip: "polygon(91.77% 35.00%, 100.00% 44.50%, 98.88% 60.00%, 76.00% 60.00%, 76.00% 35.00%)" },
-  { label: "Bogor & Depok", slug: "bogor", t: 40, lx: "17.17%", ly: "32.98%", clip: "polygon(10.00% 25.10%, 28.40% 25.10%, 28.40% 40.00%, 2.32% 40.00%)" },
-  { label: "Purwakarta", slug: "purwakarta", t: 40, lx: "39.20%", ly: "32.55%", clip: "polygon(28.40% 25.10%, 50.00% 25.10%, 50.00% 40.00%, 28.40% 40.00%)" },
-  { label: "Bandung", slug: "bandung", t: 40, lx: "39.20%", ly: "50.00%", clip: "polygon(28.40% 40.00%, 50.00% 40.00%, 50.00% 60.00%, 28.40% 60.00%)" },
-  { label: "Sumedang & Majalengka", slug: "sumedang", t: 40, lx: "63.00%", ly: "42.55%", clip: "polygon(50.00% 25.10%, 76.00% 25.10%, 76.00% 60.00%, 50.00% 60.00%)" },
-  { label: "Cianjur", slug: "cianjur", t: 40, lx: "14.32%", ly: "50.08%", clip: "polygon(2.32% 40.00%, 28.40% 40.00%, 28.40% 60.00%, 0.00% 60.00%, 0.00% 44.50%)" },
-  { label: "Sukabumi", slug: "sukabumi", t: 40, lx: "15.23%", ly: "71.54%", clip: "polygon(0.00% 60.00%, 28.40% 60.00%, 28.40% 87.65%, 0.00% 77.80%)" },
-  { label: "Garut", slug: "garut", t: 40, lx: "39.63%", ly: "75.77%", clip: "polygon(28.40% 60.00%, 50.00% 60.00%, 50.00% 95.14%, 28.40% 87.65%)" },
-  { label: "Tasikmalaya", slug: "tasikmalaya", t: 40, lx: "63.28%", ly: "79.38%", clip: "polygon(50.00% 60.00%, 76.00% 60.00%, 76.00% 100.00%, 64.00% 100.00%, 50.00% 95.14%)" },
-  { label: "Ciamis & Pangandaran", slug: "ciamis", t: 40, lx: "86.74%", ly: "79.55%", clip: "polygon(76.00% 60.00%, 98.88% 60.00%, 97.44% 80.00%, 96.00% 100.00%, 76.00% 100.00%)" },
+  { label: "Bekasi", slug: "bekasi", t: 40, lx: "36.00%", ly: "14.00%", clip: "polygon(28.40% 1.10%, 36.00% 3.80%, 45.00% 6.58%, 45.00% 16.00%, 45.00% 25.10%, 36.00% 25.10%, 28.40% 25.10%, 28.40% 12.00%)" },
+  { label: "Karawang", slug: "karawang", t: 40, lx: "52.00%", ly: "16.00%", clip: "polygon(45.00% 6.58%, 52.00% 9.00%, 60.00% 11.52%, 60.00% 18.00%, 60.00% 25.10%, 52.00% 25.10%, 45.00% 25.10%, 45.00% 16.00%)" },
+  { label: "Subang", slug: "subang", t: 40, lx: "68.00%", ly: "18.00%", clip: "polygon(60.00% 11.52%, 68.00% 14.10%, 76.00% 16.80%, 76.00% 21.00%, 76.00% 25.10%, 68.00% 25.10%, 60.00% 25.10%, 60.00% 18.00%)" },
+  { label: "Indramayu", slug: "indramayu", t: 40, lx: "82.00%", ly: "28.00%", clip: "polygon(76.00% 16.80%, 84.00% 26.00%, 91.77% 35.00%, 84.00% 35.00%, 76.00% 35.00%, 76.00% 25.10%)" },
+  { label: "Cirebon", slug: "cirebon", t: 40, lx: "88.00%", ly: "48.00%", clip: "polygon(91.77% 35.00%, 96.00% 40.00%, 100.00% 44.50%, 99.40% 52.00%, 98.88% 60.00%, 88.00% 60.00%, 76.00% 60.00%, 76.00% 35.00%)" },
+  { label: "Bogor & Depok", slug: "bogor", t: 40, lx: "18.00%", ly: "32.00%", clip: "polygon(10.00% 25.10%, 20.00% 25.10%, 28.40% 25.10%, 28.40% 32.50%, 28.40% 40.00%, 16.00% 40.00%, 2.32% 40.00%, 6.00% 32.50%)" },
+  { label: "Purwakarta", slug: "purwakarta", t: 40, lx: "39.00%", ly: "32.00%", clip: "polygon(28.40% 25.10%, 39.00% 25.10%, 50.00% 25.10%, 50.00% 32.50%, 50.00% 40.00%, 39.00% 40.00%, 28.40% 40.00%, 28.40% 32.50%)" },
+  { label: "Bandung", slug: "bandung", t: 40, lx: "39.00%", ly: "50.00%", clip: "polygon(28.40% 40.00%, 39.00% 40.00%, 50.00% 40.00%, 50.00% 50.00%, 50.00% 60.00%, 39.00% 60.00%, 28.40% 60.00%, 28.40% 50.00%)" },
+  { label: "Sumedang & Majalengka", slug: "sumedang", t: 40, lx: "63.00%", ly: "42.00%", clip: "polygon(50.00% 25.10%, 63.00% 25.10%, 76.00% 25.10%, 76.00% 42.50%, 76.00% 60.00%, 63.00% 60.00%, 50.00% 60.00%, 50.00% 42.50%)" },
+  { label: "Cianjur", slug: "cianjur", t: 40, lx: "14.00%", ly: "50.00%", clip: "polygon(2.32% 40.00%, 15.00% 40.00%, 28.40% 40.00%, 28.40% 50.00%, 28.40% 60.00%, 14.00% 60.00%, 0.00% 60.00%, 0.00% 44.50%)" },
+  { label: "Sukabumi", slug: "sukabumi", t: 40, lx: "14.00%", ly: "72.00%", clip: "polygon(0.00% 60.00%, 14.00% 60.00%, 28.40% 60.00%, 28.40% 74.00%, 28.40% 87.65%, 18.00% 84.00%, 8.00% 81.00%, 0.00% 77.80%)" },
+  { label: "Garut", slug: "garut", t: 40, lx: "39.00%", ly: "76.00%", clip: "polygon(28.40% 60.00%, 39.00% 60.00%, 50.00% 60.00%, 50.00% 78.00%, 50.00% 95.14%, 39.00% 91.40%, 28.40% 87.65%, 28.40% 74.00%)" },
+  { label: "Tasikmalaya", slug: "tasikmalaya", t: 40, lx: "63.00%", ly: "80.00%", clip: "polygon(50.00% 60.00%, 63.00% 60.00%, 76.00% 60.00%, 76.00% 80.00%, 76.00% 100.00%, 64.00% 100.00%, 50.00% 95.14%, 50.00% 78.00%)" },
+  { label: "Ciamis & Pangandaran", slug: "ciamis", t: 40, lx: "87.00%", ly: "80.00%", clip: "polygon(76.00% 60.00%, 88.00% 60.00%, 98.88% 60.00%, 97.44% 80.00%, 96.00% 100.00%, 86.00% 100.00%, 76.00% 100.00%, 76.00% 80.00%)" },
 ];
 
-// Kota admins use simplified ADM2 outlines that tile flush to the boundaries.
+// Kota admins use stylized multi-corner polygons (6-10 corners) that tile flush to the boundaries.
 // Coordinates are slot-local: x 0-100, y 10.5-100 (sea above coast reserved for Seribu).
 const cityRegions = [
   { label: "Kepulauan Seribu", slug: "seribu", t: 30, lx: "33.00%", ly: "4.50%", clip: "polygon(29.50% 5.00%,33.00% 2.50%,36.50% 4.50%,35.50% 7.50%,31.00% 7.00%)" },
-  { label: "Jakarta Utara", slug: "utara", t: 40, lx: "50.00%", ly: "28.00%", clip: "polygon(0% 10.5%, 18% 10.5%, 30% 22%, 60% 22%, 75% 12%, 100% 12%, 100% 35%, 65% 35%, 38% 35%, 0% 35%)" },
-  { label: "Jakarta Barat", slug: "barat", t: 50, lx: "18.00%", ly: "50.00%", clip: "polygon(0% 35%, 38% 35%, 38% 58%, 22% 66%, 0% 66%)" },
-  { label: "Jakarta Pusat", slug: "pusat", t: 62, lx: "51.50%", ly: "46.50%", clip: "polygon(38% 35%, 65% 35%, 65% 58%, 38% 58%)" },
-  { label: "Jakarta Timur", slug: "timur", t: 44, lx: "82.00%", ly: "67.00%", clip: "polygon(65% 35%, 100% 35%, 100% 100%, 60% 100%, 65% 78%, 65% 58%)" },
-  { label: "Jakarta Selatan", slug: "selatan", t: 54, lx: "32.00%", ly: "79.00%", clip: "polygon(0% 66%, 22% 66%, 38% 58%, 65% 58%, 65% 78%, 60% 100%, 0% 100%)" },
+  { label: "Jakarta Utara", slug: "utara", t: 40, lx: "50.00%", ly: "22.00%", clip: "polygon(0.00% 10.50%, 20.00% 10.00%, 45.00% 24.00%, 70.00% 18.00%, 100.00% 12.00%, 100.00% 36.00%, 64.00% 36.00%, 50.00% 32.00%, 38.00% 36.00%, 0.00% 36.00%)" },
+  { label: "Jakarta Barat", slug: "barat", t: 50, lx: "18.00%", ly: "48.00%", clip: "polygon(0.00% 36.00%, 38.00% 36.00%, 32.00% 46.00%, 38.00% 58.00%, 20.00% 64.00%, 0.00% 64.00%, 0.00% 48.00%)" },
+  { label: "Jakarta Pusat", slug: "pusat", t: 62, lx: "50.00%", ly: "46.00%", clip: "polygon(38.00% 36.00%, 50.00% 32.00%, 64.00% 36.00%, 68.00% 46.00%, 64.00% 58.00%, 50.00% 62.00%, 38.00% 58.00%, 32.00% 46.00%)" },
+  { label: "Jakarta Timur", slug: "timur", t: 44, lx: "80.00%", ly: "66.00%", clip: "polygon(64.00% 36.00%, 100.00% 36.00%, 100.00% 70.00%, 100.00% 100.00%, 60.00% 100.00%, 64.00% 78.00%, 64.00% 58.00%, 68.00% 46.00%)" },
+  { label: "Jakarta Selatan", slug: "selatan", t: 54, lx: "35.00%", ly: "80.00%", clip: "polygon(0.00% 64.00%, 20.00% 64.00%, 38.00% 58.00%, 50.00% 62.00%, 64.00% 58.00%, 64.00% 78.00%, 60.00% 100.00%, 30.00% 100.00%, 0.00% 100.00%)" },
 ];
 
 const cityData: Record<string, { kind: string; officials: { role: string; name: string }[]; kecs: string[] }> = {
